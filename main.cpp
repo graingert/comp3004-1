@@ -3,6 +3,14 @@
 #include <GL/glew.h>
 #include <GL/glfw.h>
 
+bool running = true;
+
+void key_callback(int key, int state){
+	if (key == GLFW_KEY_ESC && state == GLFW_RELEASE){
+		running = false;
+	}
+}
+
 int main()
 {
 	glfwInit();
@@ -21,7 +29,7 @@ int main()
 	
 	glfwSwapInterval(1);
 	
-	bool running = true;
+	glfwSetKeyCallback(&key_callback);
 
 	while (running)
 	{
@@ -29,10 +37,6 @@ int main()
 		glfwSwapBuffers();
 
 		// User input
-
-		// Exit on escape key
-		if (glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS)
-			running = false;
 
 		// Exit on window close
 		if (!glfwGetWindowParam(GLFW_OPENED))
