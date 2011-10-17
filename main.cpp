@@ -7,20 +7,20 @@ int main()
 {
 	glfwInit();
 
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
-	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
+	//glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
+	//glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	glfwOpenWindow(1280, 720, 0, 0, 0, 0, 32, 0, GLFW_WINDOW);
 
 	glewInit();
 
-	glfwSetWindowTitle("Rock Around The World!");
+	glfwSetWindowTitle("OpenGL");
 
 	glClearColor(1.0f, .0f, .2f, 1.0f);
-
-	glfwEnable(GLFW_STICKY_KEYS);
-
+	
+	glfwSwapInterval(1);
+	
 	bool running = true;
 
 	while (running)
