@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <GL/glfw.h>
 
-#include <common/shader.hpp>
+#include "common/shader.hpp"
 
 bool running = true;
 
@@ -27,7 +27,7 @@ int main()
 
 	glfwSetWindowTitle("OpenGL");
 
-	glClearColor(1.0f, .0f, .2f, 1.0f);
+	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 	
 	glfwSwapInterval(1);
 	
@@ -57,7 +57,7 @@ int main()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		glUseProgram(programID)
+		glUseProgram(programID);
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
