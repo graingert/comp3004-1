@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include <GL/glfw.h>
 
+#include <common/shader.hpp>
+
 bool running = true;
 
 void key_callback(int key, int state){
@@ -49,11 +51,13 @@ int main()
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
+	GLuint programID = LoadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 
 	while (running)
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 		
+		glUseProgram(programID)
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
