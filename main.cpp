@@ -141,7 +141,7 @@ int main()
 
 	glfwSetWindowTitle("OpenGL");
 
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	glClearColor(0x07/255.0f, 0x76/255.0f, 0xA0/255.0f, 1.0f);
 	
 	//Enable VSync
 	glfwSwapInterval(1);
