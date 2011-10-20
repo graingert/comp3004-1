@@ -148,15 +148,6 @@ int main()
 	
 	glfwSetKeyCallback(&key_callback);
 	
-	static const GLfloat square[] = { 
-		0.0f,  0.0f, 0.0f,
-		0.5f,  0.0f, 0.0f,
-		0.0f,  0.5f, 0.0f,
-		0.5f,  0.5f, 0.0f,
-	};
-	
-	static const GLuint squareIndecies[] = {0, 1, 3, 0, 2, 3};
-	
 	CreateSphere(16,16);
 
 	GLuint vertexbuffer,indexbuffer;
