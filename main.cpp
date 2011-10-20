@@ -58,7 +58,7 @@ int main()
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER,sizeof(square), square, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(squareIndecies), squareIndecies, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(squareIndecies), squareIndecies, GL_STATIC_DRAW);
 
 	GLuint programID = LoadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
