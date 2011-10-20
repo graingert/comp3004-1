@@ -28,9 +28,6 @@ SVertex * Vertices;
 int NumVertices;  //size of the vertex array
 GLuint * Indices;  //indices which define how to connect the sphere vertices
 int NumIndices;   //size of the index array
-GLfloat ChangeY = 0.025;//Indicates how much the y values of the highest and deepest vertex
-						//in the sphere are changed each time it is rendered
-float yRotated = 0.0;
 
 void CreateSphere(int PointRows, int PointsPerRow)
 {
@@ -138,7 +135,7 @@ int main()
 	//glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
 	//glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	glfwOpenWindow(1280, 720, 0, 0, 0, 0, 32, 0, GLFW_WINDOW);
+	glfwOpenWindow(640, 640, 0, 0, 0, 0, 32, 0, GLFW_WINDOW);
 
 	glewInit();
 
@@ -158,20 +155,18 @@ int main()
 	};
 	
 	CreateSphere(16,16);
-	//Enable the vertex array functionality:
-	glEnableClientState(GL_VERTEX_ARRAY);
-	//Enable the color array functionality (so we can specify a color for each vertex)
-	glEnableClientState(GL_COLOR_ARRAY);
 	
-	glVertexPointer(	3,   //3 components per vertex (x,y,z)
-						GL_FLOAT,
-						sizeof(SVertex),
-						Vertices);
-	//pass the color pointer
-	glColorPointer(		3,   //3 components per vertex (r,g,b)
-						GL_FLOAT,
-						sizeof(SVertex),
-						&Vertices[0].r);  //Pointer to the first color
+	// This will identify our vertex buffer
+	GLuint vertexbuffer;
+ 
+	// Generate 1 buffer, put the resulting identifier in vertexbuffer
+	glGenBuffers(1, &vertexbuffer);
+ 
+	// The following commands will talk about our 'vertexbuffer' buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+ 
+	// Give our vertices to OpenGL.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
 	GLuint programID = LoadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -180,13 +175,22 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glUseProgram(programID);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(
+			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            // array buffer offset
+		);
+		
 		glDrawElements(	GL_TRIANGLES, //mode
 						NumIndices,  //count, ie. how many indices
 						GL_UNSIGNED_INT, //type of the index array
 						Indices);
-		
+		glDisableVertexAttribArray(0);
 		glfwSwapBuffers();
-		glFlush();
 
 		// Exit on window close
 		if (!glfwGetWindowParam(GLFW_OPENED))
