@@ -24,18 +24,18 @@ using namespace glm;
 typedef struct {
 	float XYZW[4];
 	float RGBA[4];
-} SVertex;
+} Vertex;
 
-ushort makeMiddlePoint(ushort idx0, ushort idx1, vector<SVertex> *vertices) {
-	SVertex v0 = vertices->at(idx0);
-	SVertex v1 = vertices->at(idx1);
+ushort makeMiddlePoint(ushort idx0, ushort idx1, vector<Vertex> *vertices) {
+	Vertex v0 = vertices->at(idx0);
+	Vertex v1 = vertices->at(idx1);
 	vec3 normalizedVector = normalize(
 			vec3(
 				(v0.XYZW[0] + v1.XYZW[0]) / 2.0f,
 				(v0.XYZW[1] + v1.XYZW[1]) / 2.0f,
 				(v0.XYZW[2] + v1.XYZW[2]) / 2.0f)
 	);
-	SVertex middle = { {
+	Vertex middle = { {
 		normalizedVector[0],
 		normalizedVector[1],
 		normalizedVector[2],
@@ -45,12 +45,12 @@ ushort makeMiddlePoint(ushort idx0, ushort idx1, vector<SVertex> *vertices) {
 	return vertices->size() - 1; // Hack to return index of most recently added element
 }
 
-void makeSphere(std::vector<SVertex> *vertices, std::vector<GLuint> *indexes) {
+void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, GLuint iterations) {
 	// Using IcoSphere method found at http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
 	// Make Icosahedron
 	float t = (1.0f + sqrt(5.0f)) / 2;
 	// Have to manually do the 12 vertices
-	SVertex startingVertices[] = {
+	Vertex startingVertices[] = {
 		{{ -1.0f,  t,  0.0f, 1.0f }, { 0.5f, 0.5f, 0.5f, 1.0f }},
 		{{  1.0f,  t,  0.0f, 1.0f }, { 0.5f, 0.5f, 0.5f, 1.0f }},
 		{{ -1.0f, -t,  0.0f, 1.0f }, { 0.5f, 0.5f, 0.5f, 1.0f }},
@@ -106,7 +106,7 @@ void makeSphere(std::vector<SVertex> *vertices, std::vector<GLuint> *indexes) {
 		9, 8, 1,
 	};
 	vector<GLuint> *localIndexes = new vector<GLuint>(startingIndexes, startingIndexes + (3 * 20)); // Have us a local version so we can create & delete for each iteration. Copy into result vector later
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < iterations; i++) {
 		vector<GLuint> *newIndexes = new vector<GLuint>();
 		vector<GLuint>::iterator it;
 		for (it = localIndexes->begin(); it < localIndexes->end(); it+=3) {
@@ -120,7 +120,6 @@ void makeSphere(std::vector<SVertex> *vertices, std::vector<GLuint> *indexes) {
 				}
 			}
 
-			//printf("Indexes %d, %d, %d\n", idx[0], idx[1], idx[2]);
 			ushort a = makeMiddlePoint(idx[0], idx[1], vertices);
 			ushort b = makeMiddlePoint(idx[1], idx[2], vertices);
 			ushort c = makeMiddlePoint(idx[2], idx[0], vertices);
@@ -148,6 +147,107 @@ void makeSphere(std::vector<SVertex> *vertices, std::vector<GLuint> *indexes) {
 	indexes->insert(indexes->begin(), localIndexes->begin(), localIndexes->end()); // startingIndexes+x where x is the number of items in startingIndexes
 }
 
+//http://www.codecolony.de/opengl.htm#VertexArrays
+void makeUVSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indices,
+	int PointRows, int PointsPerRow)
+{
+	vector <Vertex> localVertices;
+	vector <GLuint> localIndices;
+	
+	int NumVertices = (PointRows-2)*PointsPerRow + 2;
+	localVertices.reserve(NumVertices);
+	
+
+	float x,y,z;
+	int i,j;
+	double r;
+	for (i = 1; i < (PointRows-1); i++)
+	{
+		for (j = 0; j < PointsPerRow; j++)
+		{
+			y = 1.0 - float(i) / float(PointRows-1)*2.0;
+			r = sin (acos(y));  //radius of the row
+			x = r * sin(float(j) / float(PointsPerRow)*PI*2.0);
+
+			z = r * cos(float(j) / float(PointsPerRow)*PI*2.0);
+			localVertices[(i-1)*PointsPerRow+j].XYZW[0] = x;
+			localVertices[(i-1)*PointsPerRow+j].XYZW[1] = y;
+			localVertices[(i-1)*PointsPerRow+j].XYZW[2] = z;
+			localVertices[(i-1)*PointsPerRow+j].XYZW[3] = 0;
+			localVertices[(i-1)*PointsPerRow+j].RGBA[0] = (float)(i) / float(PointRows);
+			localVertices[(i-1)*PointsPerRow+j].RGBA[1] = 0.7;
+			localVertices[(i-1)*PointsPerRow+j].RGBA[2] = (float)(j) / float(PointsPerRow);
+			localVertices[(i-1)*PointsPerRow+j].RGBA[3] = 1.0;
+		}
+
+	}
+	//The highest and deepest vertices:
+	localVertices[(PointRows-2)*PointsPerRow].XYZW[0] = 0.0;
+	localVertices[(PointRows-2)*PointsPerRow].XYZW[1] = 1.0;
+	localVertices[(PointRows-2)*PointsPerRow].XYZW[2] = 0.0;
+	localVertices[(PointRows-2)*PointsPerRow].XYZW[3] = 0.0;
+	localVertices[(PointRows-2)*PointsPerRow].RGBA[0] = 1.0;
+	localVertices[(PointRows-2)*PointsPerRow].RGBA[1] = 0.7;
+	localVertices[(PointRows-2)*PointsPerRow].RGBA[2] = 1.0;
+	localVertices[(PointRows-2)*PointsPerRow].RGBA[3] = 1.0;
+	localVertices[(PointRows-2)*PointsPerRow+1].XYZW[0] = 0.0;
+	localVertices[(PointRows-2)*PointsPerRow+1].XYZW[1] = -1.0;
+	localVertices[(PointRows-2)*PointsPerRow+1].XYZW[2] = 0.0;
+	localVertices[(PointRows-2)*PointsPerRow+1].XYZW[3] = 0.0;
+	localVertices[(PointRows-2)*PointsPerRow+1].RGBA[0] = 1.0;
+	localVertices[(PointRows-2)*PointsPerRow+1].RGBA[1] = 0.7;
+	localVertices[(PointRows-2)*PointsPerRow+1].RGBA[2] = 1.0;
+	localVertices[(PointRows-2)*PointsPerRow+1].RGBA[3] = 1.0;
+
+	//create the index array:
+	for (i = 1; i < (PointRows-2); i++)
+	{
+		for (j = 0; j < (PointsPerRow-1); j++)
+		{
+			localIndices.push_back((i-1)*PointsPerRow+j);
+			localIndices.push_back((i-1)*PointsPerRow+j+1);
+			localIndices.push_back((i)*PointsPerRow+j);
+
+			localIndices.push_back((i-1)*PointsPerRow+j+1);
+			localIndices.push_back((i)*PointsPerRow+j+1);
+			localIndices.push_back((i)*PointsPerRow+j);
+		}
+
+		localIndices.push_back((i-1)*PointsPerRow+PointsPerRow-1);
+		localIndices.push_back((i-1)*PointsPerRow);
+		localIndices.push_back((i)*PointsPerRow+j);
+
+		localIndices.push_back((i)*PointsPerRow);
+		localIndices.push_back((i-1)*PointsPerRow);
+		localIndices.push_back((i)*PointsPerRow+j);
+	}		
+
+	//The triangles to the highest and deepest vertices:
+	for (j = 0; j< (PointsPerRow-1); j++)
+	{
+		localIndices.push_back(j);
+		localIndices.push_back(j+1);
+		localIndices.push_back((PointRows-2)*PointsPerRow);
+	}
+	localIndices.push_back(j);
+	localIndices.push_back(0);
+	localIndices.push_back((PointRows-2)*PointsPerRow);
+
+	for (j = 0; j< (PointsPerRow-1); j++)
+	{
+		localIndices.push_back((PointRows-3)*PointsPerRow+j);
+		localIndices.push_back((PointRows-3)*PointsPerRow+j+1);
+		localIndices.push_back((PointRows-2)*PointsPerRow+1);
+	}
+	localIndices.push_back((PointRows-3)*PointsPerRow+j);
+	localIndices.push_back((PointRows-3)*PointsPerRow);
+	localIndices.push_back((PointRows-2)*PointsPerRow+1);
+	
+	indices->insert(indices->begin(), localIndices.begin(), localIndices.end());
+	vertices->insert(vertices->begin(), localVertices.begin(), localVertices.end());
+}
+
+
 int main()
 {
 	glfwInit();
@@ -169,10 +269,10 @@ int main()
 	
 	glfwSetKeyCallback(&key_callback);
 	
-	vector<SVertex> vertices;
+	vector<Vertex> vertices;
 	vector<GLuint> indices;
 	
-	makeSphere(&vertices, &indices);
+	makeUVSphere(&vertices, &indices, 16,16);
 
 	GLuint vertexbuffer,indexbuffer;
  
@@ -182,7 +282,7 @@ int main()
  
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(SVertex), &(vertices[0]), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(Vertex), &(vertices[0]), GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size() * sizeof(GLuint), &(indices[0]), GL_STATIC_DRAW);
 
@@ -205,10 +305,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glUseProgram(programID);
-		const size_t vertexSize = sizeof(SVertex);
+		const size_t vertexSize = sizeof(Vertex);
 		const size_t colorOffset = sizeof(float) * 4;
-		glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,sizeof(SVertex),(void*)0);
-		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,sizeof(SVertex),(void*)colorOffset);
+		glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)0);
+		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)colorOffset);
 		glEnableVertexAttribArray(0);
 		
 		glDrawElements(	GL_TRIANGLES, //mode
