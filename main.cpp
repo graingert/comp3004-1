@@ -46,6 +46,7 @@ ushort makeMiddlePoint(ushort idx0, ushort idx1, vector<Vertex> *vertices) {
 }
 
 void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, GLuint iterations) {
+	// Code From Nick Hollat
 	// Using IcoSphere method found at http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
 	// Make Icosahedron
 	float t = (1.0f + sqrt(5.0f)) / 2;
@@ -295,7 +296,7 @@ int main()
 	{
 		
 		glm::mat4 projection = glm::perspective(45.0f, 4.0f/3.0f, 0.1f, 100.0f);
-		glm::mat4 view = glm::lookAt(vec3(5,0,0), vec3(0,0,0), vec3(0,1,0));
+		glm::mat4 view = glm::lookAt(vec3(10,0,0), vec3(0,0,0), vec3(0,1,0));
 		glm::mat4 model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		glm::mat4 viewProjection = projection * view * model;
 
