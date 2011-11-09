@@ -248,6 +248,35 @@ void makeUVSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indices,
 	vertices->insert(vertices->begin(), localVertices.begin(), localVertices.end());
 }
 
+void makeCone(std::vector<Vertex> *vertices, std::vector<GLuint> *indices,
+	int radius, int height, int slices){
+	//Based on http://programming4.us/multimedia/1192.aspx
+	
+	m_cone.resize((coneSlices + 1) * 2);
+
+	// Initialize the vertices of the triangle strip.
+	vector<Vertex>::iterator vertex = m_cone.begin();
+	const float dtheta = TwoPi / coneSlices;
+	for (float theta = 0; vertex != m_cone.end(); theta += dtheta) {
+		// Grayscale gradient
+		float brightness = abs(sin(theta));
+		vec4 color(brightness, brightness, brightness, 1);
+		
+		// Apex vertex
+		vertex->Position = vec3(0, 1, 0);
+		vertex->Color = color;
+		vertex++;
+		
+		// Rim vertex
+		vertex->Position.x = coneRadius * cos(theta);
+		vertex->Position.y = 1 - coneHeight;
+		vertex->Position.z = coneRadius * sin(theta);
+		vertex->Color = color;
+		vertex++;
+	}
+		
+}
+
 
 int main()
 {
