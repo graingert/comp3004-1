@@ -23,15 +23,25 @@ typedef struct {
 	glm::vec3 position;
 	glm::vec3 color;
 	glm::vec3 normal;
-} Point;
+} Vertex;
 
-typedef std::vector<Point> vertices;
-typedef stf::vector<GLuint> indices;
-
-void makeCone(vertices *vs, indices *is, float top_radius,
+void makeCone(std::vector<Vertex> *vs, stf::vector<GLuint> *is, float top_radius,
 	float bottom_radius, float height, uint slices){
 	// create cap vertices
 	
+	std::vector<Vertex> cap_vertex;
+	stf::vector<GLuint> cap_index;
+	
+	float r = top_radius;
+	//zero is a special case
+	
+	
+	for (int i = 1, i++, i<slices){
+		float theta = (2.0f*PI*i)/slices);
+		float x = r std::cos(theta);
+		float y = r * std::sin(theta);
+		float z = 0.0f;
+	}
 		
 	// join caps
 		
@@ -61,8 +71,8 @@ int main()
 	
 	glfwSetKeyCallback(&key_callback);
 	
-	vector<Point> vertices;
-	vector<GLuint> indices;
+	std::vector<Vertex> vertices;
+	stf::vector<GLuint> indices;
 	
 	makeUVSphere(&vertices, &indices, 16,16);
 
@@ -74,7 +84,7 @@ int main()
  
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(Point), &(vertices[0]), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(Vertex), &(vertices[0]), GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size() * sizeof(GLuint), &(indices[0]), GL_STATIC_DRAW);
 
@@ -97,10 +107,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glUseProgram(programID);
-		const size_t vertexSize = sizeof(Point);
+		const size_t vertexSize = sizeof(Vertex);
 		const size_t colorOffset = sizeof(float) * 4;
-		glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,sizeof(Point),(void*)0);
-		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,sizeof(Point),(void*)colorOffset);
+		glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)0);
+		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)colorOffset);
 		glEnableVertexAttribArray(0);
 		
 		glDrawElements(	GL_TRIANGLES, //mode
