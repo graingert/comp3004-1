@@ -1,0 +1,24 @@
+#version 330 core
+
+layout(triangles) in;
+layout(line_strip, max_vertices = 2) out;
+in Atribs {
+	vec4 color;
+	vec4 normal;
+} in_atribs[];
+
+out Atribs {
+	vec4 color;
+	vec4 normal;
+} out_atribs;
+
+
+void main() {
+	gl_Position = gl_in[0].gl_Position;
+	out_atribs.color = in_atribs[0].color;
+	EmitVertex();
+	gl_Position = gl_in[0].gl_Position + in_atribs[0].normal;
+	out_atribs.color = in_atribs[0].color;
+	EmitVertex();
+	EndPrimitive();
+}
