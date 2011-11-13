@@ -2,12 +2,13 @@
 
 #include <GL/glew.h>
 #include <GL/glfw.h>
+#define GLM_SWIZZLE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <math.h>
 #include <vector>
 
-#include "common/shader.hpp"
+#include "shader.hpp"
 
 bool running = true;
 
@@ -24,6 +25,16 @@ typedef struct {
 	glm::vec4 color;
 	glm::vec3 normal;
 } Vertex;
+
+GLint link_shaders(std::vector<GLint> shaders){
+	GLuint program = glCreateProgram();
+	for (uint i = 0; i<shaders.size(); i++){
+		glAttachShader(program, shaders[i]);
+	}
+	glLinkProgram(program);
+	
+	return program;
+}
 
 ushort makeMiddlePoint(ushort idx0, ushort idx1, std::vector<Vertex> & vertices) {
 	Vertex v0 = vertices.at(idx0);
@@ -149,24 +160,24 @@ void makeISOSphere(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes
 	indexes.insert(indexes.begin(), localIndexes->begin(), localIndexes->end()); // startingIndexes+x where x is the number of items in startingIndexes
 }
 
-//void normalizeMesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices){
+void normalizeMesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices){
 		
-	//for (std::vector<GLuint>::const_iterator i = indices.begin(); i != indices.end(); std::advance(i, 3)) {
-		//glm::vec4 v[3] = { vertices[*i].position, vertices[*(i+1)].position, vertices[*(i+2)].position };
-		//glm::vec3 normal = glm::cross(v[1] - v[0], v[2] - v[0]);
+	for (std::vector<GLuint>::const_iterator i = indices.begin(); i != indices.end(); std::advance(i, 3)) {
+		glm::vec3 v[3] = { vertices[*i].position.xyz, vertices[*(i+1)].position.xyz, vertices[*(i+2)].position.xyz };
+		glm::vec3 normal = glm::cross(v[1] - v[0], v[2] - v[0]);
   
-		//for (int j = 0; j < 3; ++j){
-			//glm::vec3 a = v[(j+1) % 3] - v[j];
-			//glm::vec3 b = v[(j+2) % 3] - v[j];
-			//float weight = acos(glm::dot(a, b) / (a.length() * b.length()));
-			//vertices[*(i+j)].normal += weight * normal;
-		//}
-	//}
-
-	//for (std::vector<int>::const_iterator i = vertices.begin(); i != vertices.end(); std::advance(i, 1)) {
-		//vertices[*i].normal = glm::normalize(vertices[*i].normal);
-	//}
-//}
+		for (int j = 0; j < 3; ++j){
+			glm::vec3 a = v[(j+1) % 3] - v[j];
+			glm::vec3 b = v[(j+2) % 3] - v[j];
+			float weight = acos(glm::dot(a, b) / (a.length() * b.length()));
+			vertices[*(i+j)].normal += normal;
+		}
+	}
+	
+	for (uint i=0; i<vertices.size(); i++) {
+		vertices[i].normal = glm::normalize(vertices[i].normal);
+	}
+}
 
 
 int main()
@@ -193,8 +204,8 @@ int main()
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
 	
-	makeISOSphere(vertices, indices, 2);
-	//normalizeMesh(vertices,indices);
+	makeISOSphere(vertices, indices, 1);
+	normalizeMesh(vertices,indices);
 	GLuint vertexbuffer,indexbuffer;
  
 	
@@ -207,7 +218,17 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size() * sizeof(GLuint), &(indices[0]), GL_STATIC_DRAW);
 
-	GLuint programID = LoadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
+	//create program from shaders
+	
+	std::vector<GLint> shaders;
+	shaders.push_back(create_shader("SimpleVertexShader.vertexshader", GL_VERTEX_SHADER));
+	shaders.push_back(create_shader("SimpleFragmentShader.fragmentshader", GL_FRAGMENT_SHADER));
+	
+	GLuint standard_program = link_shaders(shaders);
+	
+	shaders.push_back(create_shader("Normals.geometryshader", GL_GEOMETRY_SHADER));
+	GLuint normals_program = link_shaders(shaders);
+	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glEnable(GL_DEPTH_TEST);
 	double oldTime, currentTime, deltaTime;
@@ -221,12 +242,14 @@ int main()
 		glm::mat4 model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		glm::mat4 viewProjection = projection * view * model;
 
-		GLuint matrixId = glGetUniformLocation(programID, "camera");
+		GLuint matrixId = glGetUniformLocation(normals_program, "camera");
+		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
+		matrixId = glGetUniformLocation(standard_program, "camera");
 		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		glUseProgram(programID);
+		
 		const size_t vertexSize = sizeof(Vertex);
 		const size_t colorOffset = sizeof(glm::vec4);
 		const size_t normalOffset = colorOffset + sizeof(glm::vec4);
@@ -237,6 +260,14 @@ int main()
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		
+		glUseProgram(standard_program);
+		glDrawElements(	GL_TRIANGLES, //mode
+						indices.size(),  //count, ie. how many indices
+						GL_UNSIGNED_INT, //type of the index array
+						(void*)0);
+						
+		
+		glUseProgram(normals_program);
 		glDrawElements(	GL_TRIANGLES, //mode
 						indices.size(),  //count, ie. how many indices
 						GL_UNSIGNED_INT, //type of the index array
