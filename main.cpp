@@ -28,13 +28,13 @@ typedef struct {
 ushort makeMiddlePoint(ushort idx0, ushort idx1, std::vector<Vertex> *vertices) {
 	glm::vec4 v0 = vertices->at(idx0).position;
 	glm::vec4 v1 = vertices->at(idx1).position;
-	vec3 normalizedVector = glm::normalize(
-			vec3(
+	glm::vec3 normalizedVector = glm::normalize(
+			glm::vec3(
 				(v0.x + v1.x) / 2.0f,
 				(v0.y + v1.y) / 2.0f,
 				(v0.z + v1.z) / 2.0f)
 	);
-	Vertex middle = { gml::vec4(normalizedVector, 1.0f), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0) };
+	Vertex middle = { glm::vec4(normalizedVector, 1.0f), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0) };
 	vertices->push_back(middle);
 	return vertices->size() - 1; // Hack to return index of most recently added element
 }
@@ -46,29 +46,31 @@ void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, 
 	float t = (1.0f + sqrt(5.0f)) / 2;
 	// Have to manually do the 12 vertices
 	Vertex startingVertices[] = {
-		{glm::vec4( -1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4(  1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4( -1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4(  1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
+		{glm::vec4( -1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4( -1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
 
-		{glm::vec4(  0.0f, -1.0f,  t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4(  0.0f,  1.0f,  t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4(  0.0f, -1.0f, -t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4(  0.0f,  1.0f, -t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
+		{glm::vec4(  0.0f, -1.0f,  t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  0.0f,  1.0f,  t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  0.0f, -1.0f, -t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  0.0f,  1.0f, -t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
 
-		{glm::vec4(  t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4(  t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4( -t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
-		{glm::vec4( -t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ),glm::vec3(0)},
+		{glm::vec4(  t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4( -t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4( -t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
 	};
 	// Normalize starting vertices
 	for (int i = 0; i < 12; i++) {
-		vec3 normalizedVector = glm::normalize(vec3(
-					startingVertices[i].position.x,
-					startingVertices[i].position.y,
-					startingVertices[i].position.z
-					));
-		startingVetices[i].position = glm::vec4(normalizedVector,1.0f)
+		glm::vec3 normalizedVector = glm::normalize(
+			glm::vec3(
+				startingVertices[i].position.x,
+				startingVertices[i].position.y,
+				startingVertices[i].position.z
+			)
+		);
+		startingVertices[i].position = glm::vec4(normalizedVector,1.0f);
 	}
 	vertices->insert(vertices->begin(), startingVertices, startingVertices + 12);
 
@@ -98,10 +100,10 @@ void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, 
 		8, 6, 7,
 		9, 8, 1,
 	};
-	vector<GLuint> *localIndexes = new vector<GLuint>(startingIndexes, startingIndexes + (3 * 20)); // Have us a local version so we can create & delete for each iteration. Copy into result vector later
+	std::vector<GLuint> *localIndexes = new std::vector<GLuint>(startingIndexes, startingIndexes + (3 * 20)); // Have us a local version so we can create & delete for each iteration. Copy into result vector later
 	for (int i = 0; i < iterations; i++) {
-		vector<GLuint> *newIndexes = new vector<GLuint>();
-		vector<GLuint>::iterator it;
+		std::vector<GLuint> *newIndexes = new std::vector<GLuint>();
+		std::vector<GLuint>::iterator it;
 		for (it = localIndexes->begin(); it < localIndexes->end(); it+=3) {
 			ushort idx[3];
 
@@ -163,9 +165,9 @@ int main()
 	glfwSetKeyCallback(&key_callback);
 	
 	std::vector<Vertex> vertices;
-	stf::vector<GLuint> indices;
+	std::vector<GLuint> indices;
 	
-	makeUVSphere(&vertices, &indices, 16,16);
+	makeISOSphere(&vertices, &indices, 2);
 
 	GLuint vertexbuffer,indexbuffer;
  
@@ -175,9 +177,9 @@ int main()
  
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(Vertex), vertices.begin()), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(Vertex), &(vertices[0]), GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size() * sizeof(GLuint), indices.begin()), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size() * sizeof(GLuint), &(indices[0]), GL_STATIC_DRAW);
 
 	GLuint programID = LoadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -188,7 +190,7 @@ int main()
 	{
 		
 		glm::mat4 projection = glm::perspective(45.0f, 4.0f/3.0f, 0.1f, 100.0f);
-		glm::mat4 view = glm::lookAt(vec3(10,0,0), vec3(0,0,0), vec3(0,1,0));
+		glm::mat4 view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
 		glm::mat4 model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		glm::mat4 viewProjection = projection * view * model;
 
@@ -199,10 +201,14 @@ int main()
 		
 		glUseProgram(programID);
 		const size_t vertexSize = sizeof(Vertex);
-		const size_t colorOffset = sizeof(float) * 4;
-		glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)0);
-		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)colorOffset);
+		const size_t colorOffset = sizeof(glm::vec4);
+		const size_t normalOffset = colorOffset + sizeof(glm::vec4);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, vertexSize, (void*)0);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vertexSize, (void*)(colorOffset));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, vertexSize, (void*)(normalOffset));
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 		
 		glDrawElements(	GL_TRIANGLES, //mode
 						indices.size(),  //count, ie. how many indices
@@ -210,6 +216,8 @@ int main()
 						(void*)0);
 						
 		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 		glfwSwapBuffers();
 
 		// Exit on window close
