@@ -1,12 +1,16 @@
 #version 330 core
 
 // Ouput data
-out vec3 color;
+out vec4 color;
+
+in Atribs {
+	smooth vec4 color;
+	flat vec4 normal;
+} atribs;
 
 void main()
 {
 
-	// Output color = red 
-	color = vec3(0x00/255.0f,0xB9/255.0f,0x45/255.0f);
+	color = atribs.color;
 
 }

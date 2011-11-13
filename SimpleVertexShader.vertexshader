@@ -1,12 +1,21 @@
 #version 330 core
 
 // Input vertex data, different for all executions of this shader.
-layout(location = 0) in vec4 vertexPosition_modelspace;
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec4 color;
+layout(location = 2) in vec3 normal;
+
 uniform mat4 camera;
+
+out Atribs {
+	vec4 color;
+	vec4 normal;
+} atribs;
 
 void main(){
 
-	gl_Position = camera * vertexPosition_modelspace;
-
+	gl_Position = camera * position;
+	atribs.normal = normalize(camera * vec4(normal, 0.0));
+	atribs.color = color;
 }
 

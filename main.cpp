@@ -26,15 +26,22 @@ typedef struct {
 } Vertex;
 
 ushort makeMiddlePoint(ushort idx0, ushort idx1, std::vector<Vertex> *vertices) {
-	glm::vec4 v0 = vertices->at(idx0).position;
-	glm::vec4 v1 = vertices->at(idx1).position;
+	Vertex v0 = vertices->at(idx0);
+	Vertex v1 = vertices->at(idx1);
 	glm::vec3 normalizedVector = glm::normalize(
 			glm::vec3(
-				(v0.x + v1.x) / 2.0f,
-				(v0.y + v1.y) / 2.0f,
-				(v0.z + v1.z) / 2.0f)
+				(v0.position.x + v1.position.x) / 2.0f,
+				(v0.position.y + v1.position.y) / 2.0f,
+				(v0.position.z + v1.position.z) / 2.0f)
 	);
-	Vertex middle = { glm::vec4(normalizedVector, 1.0f), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0) };
+	
+	glm::vec4 color = glm::vec4(
+		(v0.color.r + v1.color.r) / 2.0f,
+		(v0.color.g + v1.color.g) / 2.0f,
+		(v0.color.b + v1.color.b) / 2.0f,
+		(v0.color.a + v1.color.a) / 2.0f
+	);
+	Vertex middle = { glm::vec4(normalizedVector, 1.0f),  color , glm::vec3(0) };
 	vertices->push_back(middle);
 	return vertices->size() - 1; // Hack to return index of most recently added element
 }
@@ -46,20 +53,20 @@ void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, 
 	float t = (1.0f + sqrt(5.0f)) / 2;
 	// Have to manually do the 12 vertices
 	Vertex startingVertices[] = {
-		{glm::vec4( -1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4( -1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4( -1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4( -1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0)},
 
-		{glm::vec4(  0.0f, -1.0f,  t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  0.0f,  1.0f,  t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  0.0f, -1.0f, -t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  0.0f,  1.0f, -t, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  0.0f, -1.0f,  t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  0.0f,  1.0f,  t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  0.0f, -1.0f, -t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  0.0f,  1.0f, -t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0)},
 
-		{glm::vec4(  t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4( -t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
-		{glm::vec4( -t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.5f, 0.5f, 0.5f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4( -t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4( -t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0)},
 	};
 	// Normalize starting vertices
 	for (int i = 0; i < 12; i++) {
@@ -183,6 +190,7 @@ int main()
 
 	GLuint programID = LoadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glEnable(GL_DEPTH_TEST);
 	double oldTime, currentTime, deltaTime;
 	oldTime = glfwGetTime();
 	
@@ -197,7 +205,7 @@ int main()
 		GLuint matrixId = glGetUniformLocation(programID, "camera");
 		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
 		
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		glUseProgram(programID);
 		const size_t vertexSize = sizeof(Vertex);
