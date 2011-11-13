@@ -26,7 +26,7 @@ typedef struct {
 	glm::vec3 normal;
 } Vertex;
 
-GLint link_shaders(std::vector<GLint> shaders){
+GLint link_shaders(const std::vector<GLint>& shaders){
 	GLuint program = glCreateProgram();
 	for (uint i = 0; i<shaders.size(); i++){
 		glAttachShader(program, shaders[i]);
@@ -81,14 +81,10 @@ void makeISOSphere(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes
 	};
 	// Normalize starting vertices
 	for (int i = 0; i < 12; i++) {
-		glm::vec3 normalizedVector = glm::normalize(
-			glm::vec3(
-				startingVertices[i].position.x,
-				startingVertices[i].position.y,
-				startingVertices[i].position.z
-			)
+		startingVertices[i].position = glm::vec4(
+			glm::normalize(startingVertices[i].position.xyz),
+			1.0f
 		);
-		startingVertices[i].position = glm::vec4(normalizedVector,1.0f);
 	}
 	vertices.insert(vertices.begin(), startingVertices, startingVertices + 12);
 
@@ -122,7 +118,7 @@ void makeISOSphere(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes
 	for (GLuint i = 0; i < iterations; i++) {
 		std::vector<GLuint> *newIndexes = new std::vector<GLuint>();
 		std::vector<GLuint>::iterator it;
-		for (it = localIndexes->begin(); it < localIndexes->end(); it+=3) {
+		for (it = localIndexes->begin(); it < localIndexes->end(); std::advance(it, 3)) {
 			ushort idx[3];
 
 			// Get the indexes for this triangle
@@ -201,10 +197,10 @@ int main()
 	
 	glfwSetKeyCallback(&key_callback);
 	
-	std::vector<Vertex> vertices;
-	std::vector<GLuint> indices;
+	std::vector<Vertex> vertices(0);
+	std::vector<GLuint> indices(0);
 	
-	makeISOSphere(vertices, indices, 1);
+	makeISOSphere(vertices, indices, 0);
 	normalizeMesh(vertices,indices);
 	GLuint vertexbuffer,indexbuffer;
  
