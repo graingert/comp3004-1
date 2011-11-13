@@ -25,9 +25,9 @@ typedef struct {
 	glm::vec3 normal;
 } Vertex;
 
-ushort makeMiddlePoint(ushort idx0, ushort idx1, std::vector<Vertex> *vertices) {
-	Vertex v0 = vertices->at(idx0);
-	Vertex v1 = vertices->at(idx1);
+ushort makeMiddlePoint(ushort idx0, ushort idx1, std::vector<Vertex> & vertices) {
+	Vertex v0 = vertices.at(idx0);
+	Vertex v1 = vertices.at(idx1);
 	glm::vec3 normalizedVector = glm::normalize(
 			glm::vec3(
 				(v0.position.x + v1.position.x) / 2.0f,
@@ -42,11 +42,11 @@ ushort makeMiddlePoint(ushort idx0, ushort idx1, std::vector<Vertex> *vertices) 
 		(v0.color.a + v1.color.a) / 2.0f
 	);
 	Vertex middle = { glm::vec4(normalizedVector, 1.0f),  color , glm::vec3(0) };
-	vertices->push_back(middle);
-	return vertices->size() - 1; // Hack to return index of most recently added element
+	vertices.push_back(middle);
+	return vertices.size() - 1; // Hack to return index of most recently added element
 }
 
-void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, GLuint iterations) {
+void makeISOSphere(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes, GLuint iterations) {
 	// Code From Nick Hollat
 	// Using IcoSphere method found at http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
 	// Make Icosahedron
@@ -79,7 +79,7 @@ void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, 
 		);
 		startingVertices[i].position = glm::vec4(normalizedVector,1.0f);
 	}
-	vertices->insert(vertices->begin(), startingVertices, startingVertices + 12);
+	vertices.insert(vertices.begin(), startingVertices, startingVertices + 12);
 
 	// Make the 20 faces of the icosahedron
 	GLuint startingIndexes[] = {
@@ -108,7 +108,7 @@ void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, 
 		9, 8, 1,
 	};
 	std::vector<GLuint> *localIndexes = new std::vector<GLuint>(startingIndexes, startingIndexes + (3 * 20)); // Have us a local version so we can create & delete for each iteration. Copy into result vector later
-	for (int i = 0; i < iterations; i++) {
+	for (GLuint i = 0; i < iterations; i++) {
 		std::vector<GLuint> *newIndexes = new std::vector<GLuint>();
 		std::vector<GLuint>::iterator it;
 		for (it = localIndexes->begin(); it < localIndexes->end(); it+=3) {
@@ -117,8 +117,8 @@ void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, 
 			// Get the indexes for this triangle
 			for (int j = 0; j < 3; j++) {
 				idx[j] = *(it+j);
-				if(idx[j] > vertices->size()) {
-					assert(idx[j] < vertices->size());
+				if(idx[j] > vertices.size()) {
+					assert(idx[j] < vertices.size());
 				}
 			}
 
@@ -134,7 +134,7 @@ void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, 
 			};
 
 			for (int j = 0; j < 12; j++) {
-				assert(idxToAdd[j] < vertices->size());
+				assert(idxToAdd[j] < vertices.size());
 			}
 
 			newIndexes->insert(newIndexes->begin(), idxToAdd, idxToAdd+12);
@@ -143,11 +143,30 @@ void makeISOSphere(std::vector<Vertex> *vertices, std::vector<GLuint> *indexes, 
 		localIndexes = newIndexes;
 
 		for (it = localIndexes->begin(); it < localIndexes->end(); it++) {
-			assert(*it < vertices->size());
+			assert(*it < vertices.size());
 		}
 	}
-	indexes->insert(indexes->begin(), localIndexes->begin(), localIndexes->end()); // startingIndexes+x where x is the number of items in startingIndexes
+	indexes.insert(indexes.begin(), localIndexes->begin(), localIndexes->end()); // startingIndexes+x where x is the number of items in startingIndexes
 }
+
+//void normalizeMesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices){
+		
+	//for (std::vector<GLuint>::const_iterator i = indices.begin(); i != indices.end(); std::advance(i, 3)) {
+		//glm::vec4 v[3] = { vertices[*i].position, vertices[*(i+1)].position, vertices[*(i+2)].position };
+		//glm::vec3 normal = glm::cross(v[1] - v[0], v[2] - v[0]);
+  
+		//for (int j = 0; j < 3; ++j){
+			//glm::vec3 a = v[(j+1) % 3] - v[j];
+			//glm::vec3 b = v[(j+2) % 3] - v[j];
+			//float weight = acos(glm::dot(a, b) / (a.length() * b.length()));
+			//vertices[*(i+j)].normal += weight * normal;
+		//}
+	//}
+
+	//for (std::vector<int>::const_iterator i = vertices.begin(); i != vertices.end(); std::advance(i, 1)) {
+		//vertices[*i].normal = glm::normalize(vertices[*i].normal);
+	//}
+//}
 
 
 int main()
@@ -174,8 +193,8 @@ int main()
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
 	
-	makeISOSphere(&vertices, &indices, 2);
-
+	makeISOSphere(vertices, indices, 2);
+	//normalizeMesh(vertices,indices);
 	GLuint vertexbuffer,indexbuffer;
  
 	
