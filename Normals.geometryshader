@@ -2,6 +2,9 @@
 //based somewhat on http://blogs.agi.com/insight3d/index.php/2008/10/23/geometry-shader-for-debugging-normals/
 layout(triangles) in;
 layout(line_strip, max_vertices = 2) out;
+
+uniform float normalsLength;
+
 in Atribs {
 	vec4 color;
 	vec4 normal;
@@ -14,11 +17,18 @@ out Atribs {
 
 
 void main() {
-	gl_Position = gl_in[0].gl_Position;
-	out_atribs.color = in_atribs[0].color;
-	EmitVertex();
-	gl_Position = gl_in[0].gl_Position + in_atribs[0].normal;
-	out_atribs.color = in_atribs[0].color;
-	EmitVertex();
-	EndPrimitive();
+	for(int i = 0; i < 3; ++i){
+	
+		gl_Position = gl_in[i].gl_Position;
+		out_atribs.color = in_atribs[i].color;
+		out_atribs.normal = in_atribs[i].normal;
+		EmitVertex();
+		
+		gl_Position = gl_in[i].gl_Position + (in_atribs[i].normal * normalsLength);
+		out_atribs.color = in_atribs[i].color;
+		out_atribs.normal = in_atribs[i].normal;
+		EmitVertex();
+		
+		EndPrimitive();
+	}
 }

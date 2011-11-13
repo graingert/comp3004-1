@@ -239,6 +239,8 @@ int main()
 		glm::mat4 viewProjection = projection * view * model;
 
 		GLuint matrixId = glGetUniformLocation(normals_program, "camera");
+		GLuint normalLengthPtr = glGetUniformLocation(normals_program, "normalsLength");
+		glUniform1f(normalLengthPtr, 0.5f);
 		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
 		matrixId = glGetUniformLocation(standard_program, "camera");
 		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
