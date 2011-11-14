@@ -10,7 +10,9 @@
 #include <stddef.h>
 
 #include "shader.hpp"
+#include "utils.hpp"
 
+using namespace graingert;
 bool running = true;
 
 void key_callback(int key, int state){
@@ -21,11 +23,6 @@ void key_callback(int key, int state){
 
 #define PI 3.14159265359
 //simple struct which contains the position and color of a vertex
-typedef struct {
-	glm::vec4 position;
-	glm::vec4 color;
-	glm::vec3 normal;
-} Vertex;
 
 GLint link_shaders(const std::vector<GLint>& shaders){
 	GLuint program = glCreateProgram();
@@ -201,7 +198,7 @@ int main()
 	std::vector<Vertex> vertices(0);
 	std::vector<GLuint> indices(0);
 	
-	makeISOSphere(vertices, indices, 2);
+	makeISOSphere(vertices, indices, 1);
 	normalizeMesh(vertices,indices);
 	GLuint vertexbuffer,indexbuffer;
  

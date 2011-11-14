@@ -2,7 +2,7 @@ LIBS=GLEW GLU
 LD_FLAGS+=$(addprefix -l, $(LIBS)) `pkg-config --libs libglfw`
 
 CXXFLAGS = -Wall -O2 -pedantic -Wextra `pkg-config --cflags libglfw`
-MYLIBS = shader
+MYLIBS = shader utils
 MYOBJECTS = $(addsuffix .o, $(MYLIBS)) 
 
 all: comp3004
