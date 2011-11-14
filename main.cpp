@@ -200,7 +200,7 @@ int main()
 	std::vector<Vertex> vertices(0);
 	std::vector<GLuint> indices(0);
 	
-	makeISOSphere(vertices, indices, 0);
+	makeISOSphere(vertices, indices, 2);
 	normalizeMesh(vertices,indices);
 	GLuint vertexbuffer,indexbuffer;
  
@@ -237,16 +237,6 @@ int main()
 		glm::mat4 view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
 		glm::mat4 model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		glm::mat4 viewProjection = projection * view * model;
-
-		GLuint matrixId = glGetUniformLocation(normals_program, "camera");
-		GLuint normalLengthPtr = glGetUniformLocation(normals_program, "normalsLength");
-		glUniform1f(normalLengthPtr, 0.5f);
-		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
-		matrixId = glGetUniformLocation(standard_program, "camera");
-		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
-		
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
 		
 		const size_t vertexSize = sizeof(Vertex);
 		const size_t colorOffset = sizeof(glm::vec4);
@@ -258,14 +248,23 @@ int main()
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		
-		glUseProgram(standard_program);
+		glUseProgram(normals_program);
+		GLuint matrixId = glGetUniformLocation(normals_program, "camera");
+		GLuint normalLengthPtr = glGetUniformLocation(normals_program, "normalsLength");
+		glUniform1f(normalLengthPtr, 0.5f);
+		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
+		
+		
 		glDrawElements(	GL_TRIANGLES, //mode
 						indices.size(),  //count, ie. how many indices
 						GL_UNSIGNED_INT, //type of the index array
 						(void*)0);
-						
 		
-		glUseProgram(normals_program);
+		glUseProgram(standard_program);
+		matrixId = glGetUniformLocation(standard_program, "camera");
+		glUniformMatrix4fv(matrixId, 1, GL_FALSE, &viewProjection[0][0]);
+		
+
 		glDrawElements(	GL_TRIANGLES, //mode
 						indices.size(),  //count, ie. how many indices
 						GL_UNSIGNED_INT, //type of the index array
@@ -275,7 +274,7 @@ int main()
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
 		glfwSwapBuffers();
-
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Exit on window close
 		if (!glfwGetWindowParam(GLFW_OPENED))
 			running = false;
