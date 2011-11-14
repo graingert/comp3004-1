@@ -1,16 +1,24 @@
+LIBS=GLEW GLU
+LD_FLAGS+=$(addprefix -l, $(LIBS)) `pkg-config --libs libglfw`
+
 CXXFLAGS = -Wall -O2 -pedantic -Wextra `pkg-config --cflags libglfw`
-LIBS = -lGLEW -lGLU -lGL `pkg-config --libs libglfw`
+MYLIBS = shader
+MYOBJECTS = $(addsuffix .o, $(MYLIBS)) 
 
-all: cw1
+all: comp3004
 
-bindir:
-	mkdir -p bin
+comp3004: main.cpp libs.a
+	$(CXX) $(CXXFLAGS) -o bin/comp3004 main.cpp bin/libs.a $(LD_FLAGS)
 
-cw1: main.cpp shader.cpp bindir
-	$(CXX) $(CXXFLAGS) main.cpp shader.cpp -o bin/cw1 $(LIBS)
+libs.a: $(MYOBJECTS)
+	ar rcs bin/$@ $(addprefix bin/,$(MYOBJECTS))
 
-run: cw1
-	bin/cw1
+%.o: %.cpp
+	$(CXX) $(CXX_FLAGS) -c $< -o bin/$@
 
+run: comp3004
+	bin/comp3004
+
+.PHONY: clean
 clean:
-	rm -rf *.o cw1
+	rm -rf bin/
