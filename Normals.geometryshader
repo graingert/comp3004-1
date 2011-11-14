@@ -17,18 +17,16 @@ out Atribs {
 
 
 void main() {
-	for(int i = 0; i < 3; ++i){
 	
-		gl_Position = gl_in[i].gl_Position;
-		out_atribs.color = in_atribs[i].color;
-		out_atribs.normal = in_atribs[i].normal;
+		gl_Position = gl_in[0].gl_Position;
+		out_atribs.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); //in_atribs[0].color;
+		out_atribs.normal = in_atribs[0].normal;
 		EmitVertex();
 		
-		gl_Position = gl_in[i].gl_Position + (in_atribs[i].normal * normalsLength);
-		out_atribs.color = in_atribs[i].color;
-		out_atribs.normal = in_atribs[i].normal;
+		gl_Position = gl_in[0].gl_Position + (in_atribs[0].normal * normalsLength);
+		out_atribs.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); //in_atribs[0].color;
+		out_atribs.normal = in_atribs[0].normal;
 		EmitVertex();
 		
 		EndPrimitive();
-	}
 }
