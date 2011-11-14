@@ -3,11 +3,14 @@ LIBS = -lGLEW -lGLU -lGL `pkg-config --libs libglfw`
 
 all: cw1
 
-cw1: main.cpp
+bindir:
+	mkdir -p bin
+
+cw1: main.cpp shader.cpp bindir
 	$(CXX) $(CXXFLAGS) main.cpp shader.cpp -o bin/cw1 $(LIBS)
 
 run: cw1
-	./bin/cw1
+	bin/cw1
 
 clean:
 	rm -rf *.o cw1
