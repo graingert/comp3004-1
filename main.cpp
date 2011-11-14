@@ -50,9 +50,86 @@ ushort makeMiddlePoint(ushort idx0, ushort idx1, std::vector<Vertex> & vertices)
 		(v0.color.b + v1.color.b) / 2.0f,
 		(v0.color.a + v1.color.a) / 2.0f
 	);
-	Vertex middle = { glm::vec4(normalizedVector, 1.0f),  color , glm::vec3(0) };
+	Vertex middle = { glm::vec4(normalizedVector, 1.0f),  color , glm::vec3(0.0f) };
 	vertices.push_back(middle);
 	return vertices.size() - 1; // Hack to return index of most recently added element
+}
+
+void makeCube(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes){
+	glm::vec4 a = glm::vec4( 0.0f,  0.0f,  0.0f, 1.0f );
+	glm::vec4 b = glm::vec4( 0.0f,  0.0f,  1.0f, 1.0f );
+	glm::vec4 c = glm::vec4( 0.0f,  1.0f,  0.0f, 1.0f );
+	glm::vec4 d = glm::vec4( 0.0f,  1.0f,  1.0f, 1.0f );
+	glm::vec4 e = glm::vec4( 1.0f,  0.0f,  0.0f, 1.0f );
+	glm::vec4 f = glm::vec4( 1.0f,  0.0f,  1.0f, 1.0f );
+	glm::vec4 g = glm::vec4( 1.0f,  1.0f,  0.0f, 1.0f );
+	glm::vec4 h = glm::vec4( 1.0f,  1.0f,  1.0f, 1.0f );
+	
+	GLuint idx = vertices.size();
+	glm::vec4 color;
+	glm::vec4 norm = glm::vec3(0.0f);
+	
+	//abcd
+	color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices.push_back({a,color,norm});
+	vertices.push_back({b,color,norm});
+	vertices.push_back({c,color,norm});
+	vertices.push_back({d,color,norm});
+	
+	GLuint face1[] = {idx+1, idx+2, idx+3, idx+4};
+	idx+=4;
+	
+	//bfdh
+	color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices.push_back({a,color,norm});
+	vertices.push_back({b,color,norm});
+	vertices.push_back({c,color,norm});
+	vertices.push_back({d,color,norm});
+	
+	GLuint face2[] = {idx+1, idx+2, idx+3, idx+4};
+	idx+=4;
+	
+	//fehg
+	color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices.push_back({a,color,norm});
+	vertices.push_back({b,color,norm});
+	vertices.push_back({c,color,norm});
+	vertices.push_back({d,color,norm});
+	
+	GLuint face3[] = {idx+1, idx+2, idx+3, idx+4};
+	idx+=4;
+	
+	//aecg
+	color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices.push_back({a,color,norm});
+	vertices.push_back({b,color,norm});
+	vertices.push_back({c,color,norm});
+	vertices.push_back({d,color,norm});
+	
+	GLuint face4[] = {idx+1, idx+2, idx+3, idx+4};
+	idx+=4;
+	
+	//cdgh
+	color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices.push_back({a,color,norm});
+	vertices.push_back({b,color,norm});
+	vertices.push_back({c,color,norm});
+	vertices.push_back({d,color,norm});
+	
+	GLuint face5[] = {idx+1, idx+2, idx+3, idx+4};
+	idx+=4;
+	
+	//abef
+	color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices.push_back({a,color,norm});
+	vertices.push_back({b,color,norm});
+	vertices.push_back({c,color,norm});
+	vertices.push_back({d,color,norm});
+	
+	GLuint face6[] = {idx+1, idx+2, idx+3, idx+4};
+	idx+=4;
+	
+	
 }
 
 void makeISOSphere(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes, GLuint iterations) {
@@ -62,20 +139,20 @@ void makeISOSphere(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes
 	float t = (1.0f + sqrt(5.0f)) / 2;
 	// Have to manually do the 12 vertices
 	Vertex startingVertices[] = {
-		{glm::vec4( -1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4( -1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4( -1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4(  1.0f,  t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4( -1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4(  1.0f, -t,  0.0f, 1.0f ), glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ), glm::vec3(0.0f)},
 
-		{glm::vec4(  0.0f, -1.0f,  t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  0.0f,  1.0f,  t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  0.0f, -1.0f, -t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  0.0f,  1.0f, -t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  0.0f, -1.0f,  t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4(  0.0f,  1.0f,  t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4(  0.0f, -1.0f, -t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4(  0.0f,  1.0f, -t, 1.0f ), glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ), glm::vec3(0.0f)},
 
-		{glm::vec4(  t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4(  t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4( -t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0)},
-		{glm::vec4( -t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0)},
+		{glm::vec4(  t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4(  t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4( -t,  0.0f, -1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0.0f)},
+		{glm::vec4( -t,  0.0f,  1.0f, 1.0f ), glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ), glm::vec3(0.0f)},
 	};
 	// Normalize starting vertices
 	for (int i = 0; i < 12; i++) {
@@ -156,15 +233,16 @@ void makeISOSphere(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes
 
 void normalizeMesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices){
 		
-	for (std::vector<GLuint>::const_iterator i = indices.begin(); i != indices.end(); std::advance(i, 3)) {
-		glm::vec3 v[3] = { vertices[*i].position.xyz, vertices[*(i+1)].position.xyz, vertices[*(i+2)].position.xyz };
+	for (int i=0; i<indices.size(); i+=3) {
+		glm::vec3 v[3] = { 
+			vertices[indices[i]].position.xyz,
+			vertices[indices[(i+1)]].position.xyz,
+			vertices[indices[(i+2)]].position.xyz
+		};
 		glm::vec3 normal = glm::cross(v[1] - v[0], v[2] - v[0]);
   
 		for (int j = 0; j < 3; ++j){
-			glm::vec3 a = v[(j+1) % 3] - v[j];
-			glm::vec3 b = v[(j+2) % 3] - v[j];
-			float weight = acos(glm::dot(a, b) / (a.length() * b.length()));
-			vertices[*(i+j)].normal += normal;
+			vertices[indices[(i+j)]].normal += normal;
 		}
 	}
 	
@@ -235,7 +313,7 @@ int main()
 		glm::mat4 view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
 		glm::mat4 model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		glm::mat4 viewProjection = projection * view * model;
-		
+		viewProjection = glm::mat4(1);
 		const size_t vertexSize = sizeof(Vertex);
 
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, vertexSize, (void*)offsetof(Vertex,position));
