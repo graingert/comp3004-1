@@ -6,5 +6,8 @@ all: cw1
 cw1: main.cpp
 	$(CXX) $(CXXFLAGS) main.cpp shader.cpp -o bin/cw1 $(LIBS)
 
+run: cw1
+	./bin/cw1
+
 clean:
 	rm -rf *.o cw1
