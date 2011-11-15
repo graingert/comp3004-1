@@ -152,6 +152,13 @@ void makeISOSphere(std::vector<Vertex> & vertices, std::vector<GLuint> & indexes
 		}
 	}
 	indexes.insert(indexes.begin(), localIndexes->begin(), localIndexes->end()); // startingIndexes+x where x is the number of items in startingIndexes
+	
+	//Because we are drawing a unit sphere the normals are the same as
+	//the points.
+	
+	for (int i = 0; i < vertices.size(); i++){
+		vertices[i].normal = vertices[i].position.xyz;
+	}
 }
 
 void normalizeMesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices){
@@ -199,7 +206,7 @@ int main()
 	std::vector<GLuint> indices(0);
 	
 	makeISOSphere(vertices, indices, 1);
-	normalizeMesh(vertices,indices);
+	//normalizeMesh(vertices,indices);
 	GLuint vertexbuffer,indexbuffer;
  
 	
