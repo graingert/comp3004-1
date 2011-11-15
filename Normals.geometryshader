@@ -3,29 +3,31 @@
 layout(triangles) in;
 layout(line_strip, max_vertices = 6) out;
 
+
+uniform mat4 p_matrix, mv_matrix;
 uniform float normalsLength;
 
-in Atribs {
+struct Atribs {
 	vec4 color;
 	vec4 normal;
-} in_atribs[];
+	vec4 debug_normal;
+	vec4 eye_position;
+};
 
-out Atribs {
-	vec4 color;
-	vec4 normal;
-} out_atribs;
+
+in Atribs in_atribs[];
+
+out Atribs out_atribs;
 
 
 void main() {
 	for (int i = 0; i<3; i++){
 		gl_Position = gl_in[i].gl_Position;
-		out_atribs.color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		out_atribs.normal = in_atribs[i].normal;
+		out_atribs = in_atribs[i];
 		EmitVertex();
 		
-		gl_Position = gl_in[i].gl_Position + (in_atribs[i].normal * normalsLength);
-		out_atribs.color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		out_atribs.normal = in_atribs[i].normal;
+		gl_Position = gl_in[i].gl_Position + (in_atribs[i].debug_normal * normalsLength);
+		out_atribs = in_atribs[i];
 		EmitVertex();
 		
 		EndPrimitive();

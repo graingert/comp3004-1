@@ -1,21 +1,24 @@
 #version 330 core
-
+// using ideas from http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-4:-Rendering-a-Dynamic-3D-Scene-with-Phong-Shading.html
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec4 color;
 layout(location = 2) in vec3 normal;
 
-uniform mat4 camera;
+uniform mat4 p_matrix, mv_matrix;
 
 out Atribs {
 	vec4 color;
 	vec4 normal;
+	vec4 debug_normal;
+	vec4 eye_position;
 } atribs;
 
 void main(){
-
-	gl_Position = camera * position;
-	atribs.normal = normalize(camera * vec4(normal, 0.0));
+	atribs.eye_position = mv_matrix * position;
+	gl_Position = p_matrix * atribs.eye_position;
+	atribs.normal = mv_matrix * vec4(normal, 0.0);
+	atribs.debug_normal = normalize(p_matrix * mv_matrix * vec4(normal, 0.0));
 	atribs.color = color;
 }
 

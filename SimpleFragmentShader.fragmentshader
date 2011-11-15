@@ -5,7 +5,8 @@ out vec4 color;
 
 in Atribs {
 	smooth vec4 color;
-	flat vec4 normal;
+	smooth vec4 normal;
+	smooth vec4 eye_position;
 } atribs;
 
 void main()
