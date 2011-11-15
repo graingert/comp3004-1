@@ -198,7 +198,7 @@ int main()
 	std::vector<Vertex> vertices(0);
 	std::vector<GLuint> indices(0);
 	
-	makeCube(vertices, indices);
+	makeISOSphere(vertices, indices, 1);
 	normalizeMesh(vertices,indices);
 	GLuint vertexbuffer,indexbuffer;
  
@@ -235,7 +235,6 @@ int main()
 		glm::mat4 view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
 		glm::mat4 model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		glm::mat4 viewProjection = projection * view * model;
-		viewProjection = glm::mat4(1);
 		const size_t vertexSize = sizeof(Vertex);
 
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, vertexSize, (void*)offsetof(Vertex,position));
