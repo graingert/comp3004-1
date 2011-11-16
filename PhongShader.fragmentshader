@@ -1,0 +1,38 @@
+#version 330 core
+
+// Ouput data
+out vec4 color;
+
+uniform mat4 p_matrix, mv_matrix;
+
+in Atribs {
+	smooth vec4 color;
+	smooth vec4 normal;
+	smooth vec4 debug_normal;
+	smooth vec4 eye_position;
+} atribs;
+
+const vec3 light_direction = vec3(0.408248, -0.816497, 0.408248);
+const vec4 light_diffuse = vec4(0.8, 0.8, 0.8, 0.0);
+const vec4 light_ambient = vec4(0.2, 0.2, 0.2, 1.0);
+const vec4 light_specular = vec4(1.0, 1.0, 1.0, 1.0);
+
+void main()
+{
+    vec3 mv_light_direction = (mv_matrix * vec4(light_direction, 0.0)).xyz,
+         normal = normalize(atribs.normal.xyz),
+         eye = normalize(atribs.eye_position.xyz),
+         reflection = reflect(mv_light_direction, normal);
+
+    vec4 frag_diffuse = atribs.color;
+    vec4 diffuse_factor
+        = max(-dot(normal, mv_light_direction), 0.0) * light_diffuse;
+    vec4 ambient_diffuse_factor
+        = diffuse_factor + light_ambient;
+    vec4 specular_factor
+        = max(pow(-dot(reflection, eye), 30.0), 0.0)
+            * light_specular;
+    
+    color = specular_factor * vec4(0.2,0.2,0.2,0.2)
+        + ambient_diffuse_factor * frag_diffuse;
+}
