@@ -55,23 +55,14 @@ int main()
 	
 	glfwSetKeyCallback(&key_callback);
 	
+	
+	
 	Cone cone(10);
 	UVSphere uvSphere(2);
 	
-	std::vector<Vertex> vertices = uvSphere.vertices;
-	std::vector<GLuint> indices = uvSphere.indices;
-	
-	GLuint vertexbuffer,indexbuffer;
- 
-	
-	glGenBuffers(1, &vertexbuffer);
-	glGenBuffers(1, &indexbuffer);
- 
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(Vertex), &(vertices[0]), GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size() * sizeof(GLuint), &(indices[0]), GL_STATIC_DRAW);
+	cone.buffer();
+	uvSphere.buffer();
+	uvSphere.bind();
 
 	//create program from shaders
 	
@@ -117,12 +108,7 @@ int main()
 		normals_length_id = glGetUniformLocation(normals_program, "normalsLength");
 		glUniform1f(normals_length_id, 10.0f);
 		
-		
-		
-		glDrawElements(	GL_TRIANGLES, //mode
-						indices.size(),  //count, ie. how many indices
-						GL_UNSIGNED_INT, //type of the index array
-						(void*)0);
+		uvSphere.draw();
 		
 		glUseProgram(standard_program);
 		mv_matrix_id = glGetUniformLocation(standard_program, "mv_matrix");
@@ -130,11 +116,7 @@ int main()
 		p_matrix_id = glGetUniformLocation(standard_program, "p_matrix");
 		glUniformMatrix4fv(p_matrix_id, 1, GL_FALSE, &p_matrix[0][0]);
 		
-
-		glDrawElements(	GL_TRIANGLES, //mode
-						indices.size(),  //count, ie. how many indices
-						GL_UNSIGNED_INT, //type of the index array
-						(void*)0);
+		uvSphere.draw();
 						
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

@@ -9,6 +9,29 @@ namespace graingert{
 		indices = vector<GLuint>();	
 	}
 	
+	void Mesh::buffer(){
+	
+		glGenBuffers(1, &vertexbuffer);
+		glGenBuffers(1, &indexbuffer);
+		bind();
+		// Give our vertices to OpenGL.
+		glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(Vertex), &(vertices[0]), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size() * sizeof(GLuint), &(indices[0]), GL_STATIC_DRAW);
+	}
+	
+	void Mesh::bind(){
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
+	}
+	
+	void Mesh::draw(){
+		glDrawElements(	GL_TRIANGLES, //mode
+			indices.size(),  //count, ie. how many indices
+			GL_UNSIGNED_INT, //type of the index array
+			(void*)0);
+	}
+	
+	
 	Cone::Cone(int facets){
 	
 		Vertex v_top = {glm::vec4(.0f,1.0f,.0f,1.0f),glm::vec4(.0f),glm::vec3(.0f)};

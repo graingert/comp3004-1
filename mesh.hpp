@@ -6,11 +6,16 @@
 using namespace std;
 namespace graingert{
 	class Mesh{
+		private:
+			GLuint vertexbuffer,indexbuffer;
 		protected:
 			Mesh();
 		public:
 			vector<Vertex> vertices;
 			vector<GLuint> indices;
+			void buffer();
+			void bind();
+			void draw();
 	};
 	
 	class Cone: public Mesh {
