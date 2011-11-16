@@ -1,19 +1,21 @@
-#include "utils.hpp";
+#include "utils.hpp"
+
+#include <vector>
+
 
 using namespace std;
 namespace graingert{
 	class Mesh{
 
-		
-		GLuint vbo[];
-		protected:
+		public:
 			vector<Vertex> vertices;
 			vector<GLuint> indices;
-			void calculate_normals();
-			void buffer();
-		
+	};
+	
+	class Cone: public Mesh {
 		public:
-			void bind();
-			void unbind();
-	}
+			Cone(int facets);
+		private:
+			void wireCone(GLuint idxs[], GLuint center, int n );
+	};
 }
