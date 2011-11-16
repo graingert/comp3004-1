@@ -13,6 +13,7 @@
 #include "mesh.hpp"
 #include "shader.hpp"
 #include "utils.hpp"
+#include "renderer.hpp"
 
 using namespace graingert;
 bool running = true;
@@ -72,8 +73,18 @@ int main()
 	
 	GLuint standard_program = link_shaders(shaders);
 	
+	
+	glm::mat4 p_matrix = glm::perspective(45.0f, 4.0f/3.0f, 0.1f, 100.0f);
+	glm::mat4 view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	glm::mat4 model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
+	glm::mat4 mv_matrix = view * model;
+	
+	Renderer renderer(standard_program, mv_matrix, p_matrix);
+	
 	shaders.push_back(create_shader("Normals.geometryshader", GL_GEOMETRY_SHADER));
 	GLuint normals_program = link_shaders(shaders);
+	
+	NormalsRenderer normalsRenderer(normals_program, mv_matrix, p_matrix, 3.0f);
 	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glEnable(GL_DEPTH_TEST);
@@ -82,11 +93,10 @@ int main()
 	
 	while (running)
 	{
+		view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
+		model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
+		renderer._mv_matrix = normalsRenderer._mv_matrix = view * model;
 		
-		glm::mat4 p_matrix = glm::perspective(45.0f, 4.0f/3.0f, 0.1f, 100.0f);
-		glm::mat4 view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
-		glm::mat4 model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
-		glm::mat4 mv_matrix = view * model;
 		
 		const size_t vertexSize = sizeof(Vertex);
 
@@ -97,25 +107,10 @@ int main()
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		
-		glUseProgram(normals_program);
-		
-		GLuint mv_matrix_id, p_matrix_id, normals_length_id;
-		
-		mv_matrix_id = glGetUniformLocation(normals_program, "mv_matrix");
-		glUniformMatrix4fv(mv_matrix_id, 1, GL_FALSE, &mv_matrix[0][0]);
-		p_matrix_id = glGetUniformLocation(normals_program, "p_matrix");
-		glUniformMatrix4fv(p_matrix_id, 1, GL_FALSE, &p_matrix[0][0]);
-		normals_length_id = glGetUniformLocation(normals_program, "normalsLength");
-		glUniform1f(normals_length_id, 10.0f);
-		
+		renderer.bind();
 		uvSphere.draw();
 		
-		glUseProgram(standard_program);
-		mv_matrix_id = glGetUniformLocation(standard_program, "mv_matrix");
-		glUniformMatrix4fv(mv_matrix_id, 1, GL_FALSE, &mv_matrix[0][0]);
-		p_matrix_id = glGetUniformLocation(standard_program, "p_matrix");
-		glUniformMatrix4fv(p_matrix_id, 1, GL_FALSE, &p_matrix[0][0]);
-		
+		normalsRenderer.bind();
 		uvSphere.draw();
 						
 		glDisableVertexAttribArray(0);
