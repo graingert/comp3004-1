@@ -67,6 +67,8 @@ GLint link_shaders(const std::vector<GLint>& shaders){
 
 int main()
 {
+	std::cout << "A OK";
+	std::flush(std::cout);
 	glfwInit();
 
 	//glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
