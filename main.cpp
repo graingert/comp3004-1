@@ -18,10 +18,40 @@
 using namespace graingert;
 bool running = true;
 
+typedef enum Scene{
+	SPHERE,
+	CONE,
+	HOG_SPHERE,
+	PHONG_SPHERE,
+	EXTENTION,
+} Scene;
+
+Scene scene = SPHERE;
+
 void key_callback(int key, int state){
-	if (key == GLFW_KEY_ESC && state == GLFW_RELEASE){
-		running = false;
+	if (state == GLFW_RELEASE){
+		switch (key){
+			case 'A':
+				scene = SPHERE;
+				break;
+			case 'B':
+				scene = CONE;
+				break;
+			case 'C':
+				scene = HOG_SPHERE;
+				break;
+			case 'D':
+				scene = PHONG_SPHERE;
+				break;
+			case 'E':
+				scene = EXTENTION;
+				break;
+			case GLFW_KEY_ESC:
+				running = false;
+				break;
+		}
 	}
+
 }
 
 
@@ -62,6 +92,7 @@ int main()
 	UVSphere uvSphere(2);
 	
 	cone.buffer();
+	cone.bind();
 	uvSphere.buffer();
 	uvSphere.bind();
 
@@ -86,10 +117,7 @@ int main()
 	
 	NormalsRenderer normalsRenderer(normals_program, mv_matrix, p_matrix, 3.0f);
 	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glEnable(GL_DEPTH_TEST);
-	double oldTime, currentTime, deltaTime;
-	oldTime = glfwGetTime();
 	
 	while (running)
 	{
@@ -97,25 +125,33 @@ int main()
 		model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		renderer._mv_matrix = normalsRenderer._mv_matrix = view * model;
 		
-		
-		const size_t vertexSize = sizeof(Vertex);
+		switch(scene){
+			case SPHERE:
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				renderer.bind();
+				uvSphere.draw();
+				break;
+			case CONE:
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				renderer.bind();
+				cone.draw();
+				break;
+			case HOG_SPHERE:
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				renderer.bind();
+				uvSphere.draw();
+				normalsRenderer.bind();
+				uvSphere.draw();
+				break;
+			case PHONG_SPHERE:
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				renderer.bind();
+				uvSphere.draw();
+				break;
+			case EXTENTION:
+				break;
+		}
 
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, vertexSize, (void*)offsetof(Vertex,position));
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vertexSize, (void*)offsetof(Vertex,color));
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, vertexSize, (void*)offsetof(Vertex,normal));
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		
-		renderer.bind();
-		uvSphere.draw();
-		
-		normalsRenderer.bind();
-		uvSphere.draw();
-						
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
 		glfwSwapBuffers();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Exit on window close

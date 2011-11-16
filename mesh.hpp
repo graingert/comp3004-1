@@ -15,6 +15,7 @@ namespace graingert{
 			vector<GLuint> indices;
 			void buffer();
 			void bind();
+			void unbind();
 			void draw();
 	};
 	
