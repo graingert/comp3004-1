@@ -123,7 +123,7 @@ namespace graingert{
 		vertices.insert(vertices.begin(), isoVertices, isoVertices + 12);
 	
 		// create 20 triangles of the icosahedron
-		GLuint isoIndices[] = {
+		GLuint isoIndicesAr[] = {
 			0, 11, 5, // 5 faces around point 0
 			0, 5, 1,
 			0, 1, 7,
@@ -145,13 +145,13 @@ namespace graingert{
 			8, 6, 7,
 			9, 8, 1,
 		};
-		std::vector<GLuint> localIndices(isoIndices, isoIndices + (3 * 20)); 
+		std::vector<GLuint> isoIndices(isoIndicesAr, isoIndicesAr + (3 * 20)); 
 		
 		// refine triangles
 		for (GLuint i = 0; i < iterations; i++) {
 			std::vector<GLuint> newIndices;
 			std::vector<GLuint>::iterator it;
-			for (it = localIndices.begin(); it < localIndices.end(); std::advance(it, 3)) {
+			for (it = isoIndices.begin(); it < isoIndices.end(); std::advance(it, 3)) {
 				GLuint idx[3];
 				for (int j = 0; j < 3; j++) {
 					idx[j] = *(it+j);
@@ -173,9 +173,9 @@ namespace graingert{
 				}
 				newIndices.insert(newIndices.begin(), idxToAdd, idxToAdd+12);
 			}
-			localIndices = newIndices;
+			isoIndices = newIndices;
 		}
-		indices.insert(indices.begin(), localIndices.begin(), localIndices.end());
+		indices.insert(indices.begin(), isoIndices.begin(), isoIndices.end());
 		
 		//Because we are drawing a unit sphere the normals are the same as
 		//the points.
