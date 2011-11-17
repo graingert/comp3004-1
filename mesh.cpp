@@ -97,7 +97,7 @@ namespace graingert{
 		
 		float t = (1.0f + sqrt(5.0f)) / 2;
 		// create 12 vertices of a icosahedron
-		Vertex startingVertices[] = {
+		Vertex isoVertices[] = {
 			{glm::vec4( -1.0f,  t,  0.0f, 1.0f ), RED, glm::vec3(0.0f)},
 			{glm::vec4(  1.0f,  t,  0.0f, 1.0f ), RED, glm::vec3(0.0f)},
 			{glm::vec4( -1.0f, -t,  0.0f, 1.0f ), RED, glm::vec3(0.0f)},
@@ -115,40 +115,37 @@ namespace graingert{
 		};
 		// Normalize starting vertices
 		for (int i = 0; i < 12; i++) {
-			startingVertices[i].position = glm::vec4(
-				glm::normalize(startingVertices[i].position.xyz),
+			isoVertices[i].position = glm::vec4(
+				glm::normalize(isoVertices[i].position.xyz),
 				1.0f
 			);
 		}
-		vertices.insert(vertices.begin(), startingVertices, startingVertices + 12);
+		vertices.insert(vertices.begin(), isoVertices, isoVertices + 12);
 	
 		// create 20 triangles of the icosahedron
-		GLuint startingIndices[] = {
+		GLuint isoIndices[] = {
 			0, 11, 5, // 5 faces around point 0
 			0, 5, 1,
 			0, 1, 7,
 			0, 7, 10,
 			0, 10, 11,
-	
 			1, 5, 9, // 5 adjacent faces
 			5, 11, 4,
 			11, 10, 2,
 			10, 7, 6,
 			7, 1, 8,
-	
 			3, 9, 4, // 5 faces around point 3
 			3, 4, 2,
 			3, 2, 6,
 			3, 6, 8,
 			3, 8, 9,
-	
 			4, 9, 5, // 5 adjacent faces
 			2, 4, 11,
 			6, 2, 10,
 			8, 6, 7,
 			9, 8, 1,
 		};
-		std::vector<GLuint> localIndices(startingIndices, startingIndices + (3 * 20)); 
+		std::vector<GLuint> localIndices(isoIndices, isoIndices + (3 * 20)); 
 		
 		// refine triangles
 		for (GLuint i = 0; i < iterations; i++) {
@@ -156,34 +153,27 @@ namespace graingert{
 			std::vector<GLuint>::iterator it;
 			for (it = localIndices.begin(); it < localIndices.end(); std::advance(it, 3)) {
 				GLuint idx[3];
-	
-
 				for (int j = 0; j < 3; j++) {
 					idx[j] = *(it+j);
 					if(idx[j] > vertices.size()) {
 						assert(idx[j] < vertices.size());
 					}
 				}
-	
 				GLuint a = makeMiddlePoint(idx[0], idx[1]);
 				GLuint b = makeMiddlePoint(idx[1], idx[2]);
 				GLuint c = makeMiddlePoint(idx[2], idx[0]);
-	
 				GLuint idxToAdd[] = {
 					idx[0], a, c,
 					idx[1], b, a,
 					idx[2], c, b,
 					a, b, c,
 				};
-	
 				for (int j = 0; j < 12; j++) {
 					assert(idxToAdd[j] < vertices.size());
 				}
-	
 				newIndices.insert(newIndices.begin(), idxToAdd, idxToAdd+12);
 			}
 			localIndices = newIndices;
-	
 		}
 		indices.insert(indices.begin(), localIndices.begin(), localIndices.end());
 		

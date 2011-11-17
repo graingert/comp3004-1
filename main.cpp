@@ -121,7 +121,7 @@ int main()
 	shaders.push_back(create_shader("Normals.geometryshader", GL_GEOMETRY_SHADER));
 	GLuint normals_program = link_shaders(shaders);
 	
-	NormalsRenderer normalsRenderer(normals_program, mv_matrix, p_matrix, 3.0f);
+	NormalsRenderer normalsRenderer(normals_program, mv_matrix, p_matrix, 0.5f);
 	
 	glEnable(GL_DEPTH_TEST);
 	
