@@ -14,6 +14,7 @@
 #include "shader.hpp"
 #include "utils.hpp"
 #include "renderer.hpp"
+#include "animation.hpp"
 
 using namespace graingert;
 bool running = true;
@@ -57,7 +58,7 @@ void key_callback(int key, int state){
 
 GLint link_shaders(const std::vector<GLint>& shaders){
 	GLuint program = glCreateProgram();
-	for (int i = 0; i<shaders.size(); i++){
+	for (GLuint i = 0; i<shaders.size(); i++){
 		glAttachShader(program, shaders[i]);
 	}
 	glLinkProgram(program);
@@ -114,6 +115,9 @@ int main()
 	
 	Renderer renderer(standard_program, mv_matrix, p_matrix);
 	
+	Animation animation(renderer);
+	animation.buffer();
+	
 	shaders.push_back(create_shader("Normals.geometryshader", GL_GEOMETRY_SHADER));
 	GLuint normals_program = link_shaders(shaders);
 	
@@ -151,6 +155,7 @@ int main()
 				uvSphere.draw();
 				break;
 			case EXTENSION:
+				animation.draw();
 				break;
 		}
 

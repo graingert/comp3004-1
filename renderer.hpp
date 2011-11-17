@@ -1,3 +1,5 @@
+#ifndef G_RENDERER
+#define G_RENDERER
 #include "utils.hpp"
 #include <vector>
 
@@ -27,3 +29,4 @@ namespace graingert{
 	};
 		
 }
+#endif

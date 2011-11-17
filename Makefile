@@ -2,7 +2,7 @@ LIBS=GLEW GLU
 LD_FLAGS+=$(addprefix -l, $(LIBS)) `pkg-config --libs libglfw`
 
 CXXFLAGS = -Wall -O2 -pedantic -Wextra `pkg-config --cflags libglfw`
-MYLIBS = shader utils mesh renderer
+MYLIBS = shader utils mesh renderer animation
 MYOBJECTS = $(addsuffix .o, $(MYLIBS)) 
 
 all: comp3004

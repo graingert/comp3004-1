@@ -1,3 +1,5 @@
+#ifndef G_MESH
+#define G_MESH
 #include "utils.hpp"
 
 #include <vector>
@@ -33,3 +35,4 @@ namespace graingert{
 			GLuint makeMiddlePoint(GLuint idx0, GLuint idx1);
 	};
 }
+#endif
