@@ -23,7 +23,7 @@ typedef enum Scene{
 	CONE,
 	HOG_SPHERE,
 	PHONG_SPHERE,
-	EXTENTION,
+	EXTENSION
 } Scene;
 
 Scene scene = SPHERE;
@@ -44,7 +44,7 @@ void key_callback(int key, int state){
 				scene = PHONG_SPHERE;
 				break;
 			case 'E':
-				scene = EXTENTION;
+				scene = EXTENSION;
 				break;
 			case GLFW_KEY_ESC:
 				running = false;
@@ -57,7 +57,7 @@ void key_callback(int key, int state){
 
 GLint link_shaders(const std::vector<GLint>& shaders){
 	GLuint program = glCreateProgram();
-	for (uint i = 0; i<shaders.size(); i++){
+	for (int i = 0; i<shaders.size(); i++){
 		glAttachShader(program, shaders[i]);
 	}
 	glLinkProgram(program);
@@ -150,7 +150,7 @@ int main()
 				renderer.bind();
 				uvSphere.draw();
 				break;
-			case EXTENTION:
+			case EXTENSION:
 				break;
 		}
 

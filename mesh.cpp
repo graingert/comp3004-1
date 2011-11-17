@@ -94,9 +94,9 @@ namespace graingert{
 	
 	UVSphere::UVSphere(int iterations){
 		// Using IcoSphere method found at http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
-		// Make Icosahedron
+		
 		float t = (1.0f + sqrt(5.0f)) / 2;
-		// Have to manually do the 12 vertices
+		// create 12 vertices of a icosahedron
 		Vertex startingVertices[] = {
 			{glm::vec4( -1.0f,  t,  0.0f, 1.0f ), RED, glm::vec3(0.0f)},
 			{glm::vec4(  1.0f,  t,  0.0f, 1.0f ), RED, glm::vec3(0.0f)},
@@ -122,40 +122,42 @@ namespace graingert{
 		}
 		vertices.insert(vertices.begin(), startingVertices, startingVertices + 12);
 	
-		// Make the 20 faces of the icosahedron
+		// create 20 triangles of the icosahedron
 		GLuint startingIndices[] = {
-			0, 11, 5,
+			0, 11, 5, // 5 faces around point 0
 			0, 5, 1,
 			0, 1, 7,
 			0, 7, 10,
 			0, 10, 11,
 	
-			1, 5, 9,
+			1, 5, 9, // 5 adjacent faces
 			5, 11, 4,
 			11, 10, 2,
 			10, 7, 6,
 			7, 1, 8,
 	
-			3, 9, 4,
+			3, 9, 4, // 5 faces around point 3
 			3, 4, 2,
 			3, 2, 6,
 			3, 6, 8,
 			3, 8, 9,
 	
-			4, 9, 5,
+			4, 9, 5, // 5 adjacent faces
 			2, 4, 11,
 			6, 2, 10,
 			8, 6, 7,
 			9, 8, 1,
 		};
-		std::vector<GLuint> *localIndices = new std::vector<GLuint>(startingIndices, startingIndices + (3 * 20)); // Have us a local version so we can create & delete for each iteration. Copy into result vector later
+		std::vector<GLuint> localIndices(startingIndices, startingIndices + (3 * 20)); 
+		
+		// refine triangles
 		for (GLuint i = 0; i < iterations; i++) {
-			std::vector<GLuint> *newIndices = new std::vector<GLuint>();
+			std::vector<GLuint> newIndices;
 			std::vector<GLuint>::iterator it;
-			for (it = localIndices->begin(); it < localIndices->end(); std::advance(it, 3)) {
+			for (it = localIndices.begin(); it < localIndices.end(); std::advance(it, 3)) {
 				ushort idx[3];
 	
-				// Get the indices for this triangle
+
 				for (int j = 0; j < 3; j++) {
 					idx[j] = *(it+j);
 					if(idx[j] > vertices.size()) {
@@ -163,11 +165,11 @@ namespace graingert{
 					}
 				}
 	
-				ushort a = makeMiddlePoint(idx[0], idx[1]);
-				ushort b = makeMiddlePoint(idx[1], idx[2]);
-				ushort c = makeMiddlePoint(idx[2], idx[0]);
+				GLuint a = makeMiddlePoint(idx[0], idx[1]);
+				GLuint b = makeMiddlePoint(idx[1], idx[2]);
+				GLuint c = makeMiddlePoint(idx[2], idx[0]);
 	
-				ushort idxToAdd[] = { // Indices of the new triangles
+				GLuint idxToAdd[] = {
 					idx[0], a, c,
 					idx[1], b, a,
 					idx[2], c, b,
@@ -178,16 +180,12 @@ namespace graingert{
 					assert(idxToAdd[j] < vertices.size());
 				}
 	
-				newIndices->insert(newIndices->begin(), idxToAdd, idxToAdd+12);
+				newIndices.insert(newIndices.begin(), idxToAdd, idxToAdd+12);
 			}
-			delete localIndices;
 			localIndices = newIndices;
 	
-			for (it = localIndices->begin(); it < localIndices->end(); it++) {
-				assert(*it < vertices.size());
-			}
 		}
-		indices.insert(indices.begin(), localIndices->begin(), localIndices->end()); // startingIndices+x where x is the number of items in startingIndices
+		indices.insert(indices.begin(), localIndices.begin(), localIndices.end());
 		
 		//Because we are drawing a unit sphere the normals are the same as
 		//the points.
@@ -197,7 +195,8 @@ namespace graingert{
 		}
 	}
 	
-	ushort UVSphere::makeMiddlePoint(ushort idx0, ushort idx1) {
+	// return index of point in the middle of p1 and p2
+	GLuint UVSphere::makeMiddlePoint(GLuint idx0, GLuint idx1) {
 		Vertex v0 = vertices.at(idx0);
 		Vertex v1 = vertices.at(idx1);
 		glm::vec3 normalizedVector = glm::normalize(
@@ -214,6 +213,7 @@ namespace graingert{
 			(v0.color.a + v1.color.a) / 2.0f
 		);
 		Vertex middle = { glm::vec4(normalizedVector, 1.0f),  color , glm::vec3(0.0f) };
+		// store it, return index
 		vertices.push_back(middle);
 		return vertices.size() - 1;
 	}

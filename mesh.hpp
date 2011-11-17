@@ -30,6 +30,6 @@ namespace graingert{
 		public:
 			UVSphere(int iterations);
 		private:
-			ushort makeMiddlePoint(ushort idx0, ushort idx1);
+			GLuint makeMiddlePoint(GLuint idx0, GLuint idx1);
 	};
 }
