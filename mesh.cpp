@@ -49,7 +49,7 @@ namespace graingert{
 	}
 	
 	
-	Cone::Cone(int facets){
+	Cone::Cone(GLuint facets){
 	
 		Vertex v_top = {glm::vec4(.0f,1.0f,.0f,1.0f),glm::vec4(.0f),glm::vec3(.0f)};
 		vertices.push_back(v_top);
@@ -78,7 +78,7 @@ namespace graingert{
 		
 	}
 	
-	void Cone::wireCone(GLuint idxs[], GLuint center, int n ){
+	void Cone::wireCone(GLuint idxs[], GLuint center, GLuint n ){
 		for (int i = 1; i<n; i++){
 			indices.push_back(idxs[i-1]);
 			indices.push_back(idxs[i]);
@@ -92,7 +92,7 @@ namespace graingert{
 		indices.push_back(center);
 	}
 	
-	UVSphere::UVSphere(int iterations){
+	UVSphere::UVSphere(GLuint iterations){
 		// Using IcoSphere method found at http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
 		
 		float t = (1.0f + sqrt(5.0f)) / 2;
@@ -155,7 +155,7 @@ namespace graingert{
 			std::vector<GLuint> newIndices;
 			std::vector<GLuint>::iterator it;
 			for (it = localIndices.begin(); it < localIndices.end(); std::advance(it, 3)) {
-				ushort idx[3];
+				GLuint idx[3];
 	
 
 				for (int j = 0; j < 3; j++) {

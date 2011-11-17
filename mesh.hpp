@@ -23,14 +23,14 @@ namespace graingert{
 	
 	class Cone: public Mesh {
 		public:
-			Cone(int facets);
+			Cone(GLuint facets);
 		private:
-			void wireCone(GLuint idxs[], GLuint center, int n );
+			void wireCone(GLuint idxs[], GLuint center, GLuint n );
 	};
 	
 	class UVSphere: public Mesh {
 		public:
-			UVSphere(int iterations);
+			UVSphere(GLuint iterations);
 		private:
 			GLuint makeMiddlePoint(GLuint idx0, GLuint idx1);
 	};
