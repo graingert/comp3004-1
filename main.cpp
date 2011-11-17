@@ -155,7 +155,7 @@ int main()
 				uvSphere.draw();
 				break;
 			case EXTENSION:
-				animation.draw();
+				animation.draw(glfwGetTime());
 				break;
 		}
 

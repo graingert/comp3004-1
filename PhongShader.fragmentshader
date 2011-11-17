@@ -8,7 +8,6 @@ uniform mat4 p_matrix, mv_matrix;
 in Atribs {
 	smooth vec4 color;
 	smooth vec4 normal;
-	smooth vec4 debug_normal;
 	smooth vec4 eye_position;
 } atribs;
 

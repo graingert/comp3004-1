@@ -10,7 +10,6 @@ uniform mat4 p_matrix, mv_matrix;
 out Atribs {
 	vec4 color;
 	vec4 normal;
-	vec4 debug_normal;
 	vec4 eye_position;
 } atribs;
 
@@ -18,7 +17,6 @@ void main(){
 	atribs.eye_position = mv_matrix * position;
 	gl_Position = p_matrix * atribs.eye_position;
 	atribs.normal = mv_matrix * vec4(normal, 0.0);
-	atribs.debug_normal = normalize(p_matrix * mv_matrix * vec4(normal, 0.0));
 	atribs.color = color;
 }
 

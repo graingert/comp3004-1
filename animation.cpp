@@ -1,17 +1,5 @@
 #include "animation.hpp"
-#include "utils.hpp"
-#include "mesh.hpp"
-#include "renderer.hpp"
-#include <GL/glew.h>
-
-#define GLM_SWIZZLE
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <vector>
-
-
-
-
+#include <iostream>
 using namespace std;
 namespace graingert{
 	Animation::Animation(Renderer& renderer){
@@ -21,13 +9,22 @@ namespace graingert{
 		cone = new Cone(10);
 		spherea = new UVSphere(0);
 		sphereb = new UVSphere(3);
-		setmatrix();
+		oldtime = 0.0f;
+		setmatrix(0.0f);
 	}
 	
-	void Animation::setmatrix(){
-		cone_m = glm::translate( 0,0,2 );
-		spherea_m = glm::translate( 0,1,0);
-		sphereb_m = glm::translate( 0,-1,0);
+	void Animation::setmatrix(float time){
+		float t = time - oldtime;
+		oldtime = time;
+		
+		float theta = time;
+		
+		float x = cos(theta);
+		float y = sin(theta);
+		glm::mat4 rotate = glm::rotate( glm::mat4(1), (float)(50.0 * time), glm::vec3(1,1,0));
+		cone_m = glm::translate(rotate,glm::vec3(0.0f,3*y,3*x));
+		spherea_m = glm::translate(rotate,glm::vec3(0.5*x,0.5*x,0.5*y));
+		sphereb_m = glm::translate(glm::vec3(0.0,2*x,2*y));
 	}
 	
 	void Animation::buffer(){
@@ -36,8 +33,8 @@ namespace graingert{
 		sphereb->buffer();
 	}
 	
-	void Animation::draw(){
-		setmatrix();
+	void Animation::draw(float time){
+		setmatrix(time);
 		_renderer->_p_matrix = perspective;
 		_renderer->_mv_matrix = view * cone_m;
 		_renderer->bind();

@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
+#include <ctime>
 
 using namespace std;
 namespace graingert{
@@ -15,10 +16,11 @@ namespace graingert{
 			UVSphere *spherea, *sphereb;
 			Renderer *_renderer;
 			glm::mat4 perspective,view,cone_m,spherea_m,sphereb_m;
-			void setmatrix();
+			void setmatrix(float time);
+			float oldtime;
 		public:
 			Animation(Renderer& renderer);
 			void buffer();
-			void draw();
+			void draw(float time);
 	};
 }

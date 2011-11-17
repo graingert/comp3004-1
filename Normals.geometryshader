@@ -10,7 +10,6 @@ uniform float normalsLength;
 struct Atribs {
 	vec4 color;
 	vec4 normal;
-	vec4 debug_normal;
 	vec4 eye_position;
 };
 
@@ -22,11 +21,11 @@ out Atribs out_atribs;
 
 void main() {
 	for (int i = 0; i<3; i++){
-		gl_Position = gl_in[i].gl_Position;
+		gl_Position = gl_in[i].gl_Position + (in_atribs[i].normal * normalsLength);;
 		out_atribs = in_atribs[i];
 		EmitVertex();
 		
-		gl_Position = gl_in[i].gl_Position + (in_atribs[i].debug_normal * normalsLength);
+		gl_Position = gl_in[i].gl_Position;
 		out_atribs = in_atribs[i];
 		EmitVertex();
 		

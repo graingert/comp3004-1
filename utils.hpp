@@ -8,7 +8,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-
 #define PI  (3.14159265359)
 #define TAU (6.28318530718)
 #define RED (glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ))
