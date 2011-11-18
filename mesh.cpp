@@ -92,7 +92,7 @@ namespace graingert{
 		indices.push_back(center);
 	}
 	
-	UVSphere::UVSphere(GLuint iterations){
+	ISOSphere::ISOSphere(GLuint iterations){
 		// Using IcoSphere method found at http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
 		
 		float t = (1.0f + sqrt(5.0f)) / 2;
@@ -114,12 +114,14 @@ namespace graingert{
 			{glm::vec4( -t,  0.0f,  1.0f, 1.0f ), RED, glm::vec3(0.0f)},
 		};
 		// Normalize starting vertices
-		for (int i = 0; i < 12; i++) {
-			isoVertices[i].position = glm::vec4(
-				glm::normalize(isoVertices[i].position.xyz),
-				1.0f
-			);
-		}
+ for (int i = 0; i < 12; i++)
+    {
+        glm::vec4 v4;
+        glm::vec3 v3;
+        v4 = isoVertices[i].position;
+        v3 = v4.xyz;
+        isoVertices[i].position = glm::vec4(glm::normalize(v3), 1.0f);
+    }
 		vertices.insert(vertices.begin(), isoVertices, isoVertices + 12);
 	
 		// create 20 triangles of the icosahedron
@@ -186,7 +188,7 @@ namespace graingert{
 	}
 	
 	// return index of point in the middle of p1 and p2
-	GLuint UVSphere::makeMiddlePoint(GLuint idx0, GLuint idx1) {
+	GLuint ISOSphere::makeMiddlePoint(GLuint idx0, GLuint idx1) {
 		Vertex v0 = vertices.at(idx0);
 		Vertex v1 = vertices.at(idx1);
 		glm::vec3 normalizedVector = glm::normalize(

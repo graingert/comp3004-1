@@ -7,8 +7,8 @@ namespace graingert{
 		perspective = glm::perspective(45.0f, 4.0f/3.0f, 0.1f, 100.0f);
 		view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
 		cone = new Cone(10);
-		spherea = new UVSphere(0);
-		sphereb = new UVSphere(3);
+		spherea = new ISOSphere(0);
+		sphereb = new ISOSphere(3);
 		oldtime = 0.0f;
 		setmatrix(0.0f);
 	}

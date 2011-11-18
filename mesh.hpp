@@ -28,9 +28,9 @@ namespace graingert{
 			void wireCone(GLuint idxs[], GLuint center, GLuint n );
 	};
 	
-	class UVSphere: public Mesh {
+	class ISOSphere: public Mesh {
 		public:
-			UVSphere(GLuint iterations);
+			ISOSphere(GLuint iterations);
 		private:
 			GLuint makeMiddlePoint(GLuint idx0, GLuint idx1);
 	};

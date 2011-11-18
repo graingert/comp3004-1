@@ -13,7 +13,7 @@ namespace graingert{
 	class Animation{
 		private:
 			Cone *cone;
-			UVSphere *spherea, *sphereb;
+			ISOSphere *spherea, *sphereb;
 			Renderer *_renderer;
 			glm::mat4 perspective,view,cone_m,spherea_m,sphereb_m;
 			void setmatrix(float time);

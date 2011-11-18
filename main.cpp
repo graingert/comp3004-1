@@ -92,12 +92,12 @@ int main()
 	
 	
 	Cone cone(10);
-	UVSphere uvSphere(2);
+	ISOSphere sphere(2);
 	
 	cone.buffer();
 	cone.bind();
-	uvSphere.buffer();
-	uvSphere.bind();
+	sphere.buffer();
+	sphere.bind();
 
 	//create program from shaders
 	
@@ -135,7 +135,7 @@ int main()
 			case SPHERE:
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				renderer.bind();
-				uvSphere.draw();
+				sphere.draw();
 				break;
 			case CONE:
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -145,14 +145,14 @@ int main()
 			case HOG_SPHERE:
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				renderer.bind();
-				uvSphere.draw();
+				sphere.draw();
 				normalsRenderer.bind();
-				uvSphere.draw();
+				sphere.draw();
 				break;
 			case PHONG_SPHERE:
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				renderer.bind();
-				uvSphere.draw();
+				sphere.draw();
 				break;
 			case EXTENSION:
 				animation.draw(glfwGetTime());
