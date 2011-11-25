@@ -47,6 +47,7 @@ void key_callback(int key, int state){
 			case 'E':
 				scene = EXTENSION;
 				break;
+			case 'Q':
 			case GLFW_KEY_ESC:
 				running = false;
 				break;
