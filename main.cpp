@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "mesh.hpp"
+#include "node.hpp"
 #include "shader.hpp"
 #include "utils.hpp"
 #include "renderer.hpp"
@@ -90,6 +91,12 @@ int main()
 	
 	glfwSetKeyCallback(&key_callback);
 	
+//Build Scene Graph
+//[root]
+//[sphere, cone, hog, wireSphere, phong, invaders]	
+	
+	Node root(NULL, "root");
+	
 	
 	
 	Cone cone(10);
@@ -99,6 +106,18 @@ int main()
 	cone.bind();
 	sphere.buffer();
 	sphere.bind();
+	
+	root.AddChildNode(Leaf(NULL,sphere,"sphere"));
+	root.AddChildNode(Leaf(NULL,cone,"cone"));
+	root.AddChildNode(Leaf(NULL,sphere,"hog"));
+	root.AddChildNode(Leaf(NULL,sphere,"phong"));
+	
+	Node extension(root,"extension");
+	
+	root.AddChildNode(extension);
+	
+	extension.AddChildNode(Leaf(NULL,sphere,"sphere"))
+	extension.AddChildNode(Leaf(NULL,cone,"cone"))
 
 	//create program from shaders
 	

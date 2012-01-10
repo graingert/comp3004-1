@@ -30,5 +30,13 @@ private:
     std::vector<Node*> m_Children;
  
 }; // class Node
- 
+
+class Leaf: public Node {
+	public:
+		Leaf(Node* Parent = NULL, const char* Name = NULL, Mesh& mesh);
+		void Update(void);
+		const bool IsRootNode(void) const = 0; 
+	private:
+		Mesh* mesh;
+}  
 #endif
