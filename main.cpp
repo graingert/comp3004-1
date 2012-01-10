@@ -95,7 +95,7 @@ int main()
 //[root]
 //[sphere, cone, hog, wireSphere, phong, invaders]	
 	
-	Node root(NULL, "root");
+	Root root(NULL, "root");
 	
 	
 	
