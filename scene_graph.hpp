@@ -1,4 +1,4 @@
-//http://scriptionary.com/2009/02/17/simple-scene-graph-in-c/
+//http://www.andresilaghi.com/?page_id=239
 
 #ifndef __node_h_
 #define __node_h_ 1
