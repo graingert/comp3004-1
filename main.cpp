@@ -15,6 +15,7 @@
 #include "utils.hpp"
 #include "renderer.hpp"
 #include "animation.hpp"
+#include "scene_graph.hpp"
 
 using namespace graingert;
 bool running = true;
@@ -82,7 +83,7 @@ int main()
 	glm::mat4 mv_matrix = view * model;
 	
 	Renderer renderer(standard_program, mv_matrix, p_matrix);
-	
+	MeshNode::renderer = &renderer;
 	Animation animation(renderer);
 	animation.buffer();
 	

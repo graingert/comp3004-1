@@ -2,8 +2,8 @@
 
 #ifndef __node_h_
 #define __node_h_ 1
-#include <vector>
-using std;
+#include <list>
+
 namespace graingert{
 	 class Node
 		{
@@ -20,8 +20,7 @@ namespace graingert{
 		
 			void kill();
 			
-		protected:
-			std::list childs;
+			std::list<Node*> childs;
 		};
 		
 	class TransformationNode
