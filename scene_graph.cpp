@@ -1,8 +1,6 @@
 //http://scriptionary.com/2009/02/17/simple-scene-graph-in-c/
 #include "node.hpp"
 namespace graingert{
-	#include
-#include "Node.h"
 
 	Node::Node(void)
 	{
@@ -27,7 +25,7 @@ namespace graingert{
 	{
 		for(std::list::iterator it = childs.begin(); it != childs.end(); it++)
 		{
-			(*it)->;kill();
+			(*it)->kill();
 			childs.clear();
 		}
 	}
@@ -36,7 +34,32 @@ namespace graingert{
 	{
 		for(std::list::iterator it = childs.begin(); it != childs.end(); it++)
 		{
-			(*it)->;traverse();
+			(*it)->traverse();
+		}
+	}
+	
+	void TransformationNode::traverse()
+	{
+		glm::mat4 old_transform = TransformationNode::s_transform;
+		TransformationNode::s_transform = TransformationNode::s_transform * this.transform;
+		
+		for(std::list::iterator it = childs.begin(); it != childs.end(); it++)
+		{
+			(*it)->traverse();
+		}
+		
+		TransformationNode::s_transform = old_transform;
+	}
+	
+	void MeshNode::traverse()
+	{
+		MeshNode::renderer->_mv_matrix = view * TransformationNode::s_transform;
+		MeshNode::renderer->bind();
+		mesh->draw();
+		
+		for(std::list::iterator it = childs.begin(); it != childs.end(); it++)
+		{
+			(*it)->traverse();
 		}
 	}
 

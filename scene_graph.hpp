@@ -27,19 +27,16 @@ namespace graingert{
 	class TransformationNode
 		{
 		public:
-			//get transform
-			//set transform
-			
-			//apply transform
-			//remove tranform
+			static glm::mat4 s_transform;
+			glm::mat4 transform;
 		
-		private:
-			glm:mat4 transform;
 		};
 	
 	class MeshNode
 		{
-			//apply tranformation, draw
+			public:
+				Mesh* mesh;
+				static Renderer* renderer;
 		};
 #endif
 }

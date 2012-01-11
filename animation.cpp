@@ -38,12 +38,12 @@ namespace graingert{
 		_renderer->_p_matrix = perspective;
 		_renderer->_mv_matrix = view * cone_m;
 		_renderer->bind();
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		cone->draw();
 		_renderer->_mv_matrix = view * spherea_m;
 		_renderer->bind();
 		spherea->draw();
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 		_renderer->_mv_matrix = view * sphereb_m;
 		_renderer->bind();
 		sphereb->draw();

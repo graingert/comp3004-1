@@ -17,16 +17,6 @@ namespace graingert{
 		protected:
 			GLuint mv_matrix_id, p_matrix_id;
 	};
-	
-	class NormalsRenderer: public Renderer{
-		public:
-			NormalsRenderer(GLuint program, glm::mat4 mv_matrix,
-				glm::mat4 p_matrix, float normals_length);
-			float _normals_length;
-			void bind();
-		private:
-			GLuint mv_matrix_id, p_matrix_id, normals_length_id;
-	};
 		
 }
 #endif

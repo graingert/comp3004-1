@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include "mesh.hpp"
-#include "node.hpp"
 #include "shader.hpp"
 #include "utils.hpp"
 #include "renderer.hpp"
@@ -31,29 +30,6 @@ typedef enum Scene{
 Scene scene = SPHERE;
 
 void key_callback(int key, int state){
-	if (state == GLFW_RELEASE){
-		switch (key){
-			case 'A':
-				scene = SPHERE;
-				break;
-			case 'B':
-				scene = CONE;
-				break;
-			case 'C':
-				scene = HOG_SPHERE;
-				break;
-			case 'D':
-				scene = PHONG_SPHERE;
-				break;
-			case 'E':
-				scene = EXTENSION;
-				break;
-			case 'Q':
-			case GLFW_KEY_ESC:
-				running = false;
-				break;
-		}
-	}
 
 }
 
@@ -91,40 +67,12 @@ int main()
 	
 	glfwSetKeyCallback(&key_callback);
 	
-//Build Scene Graph
-//[root]
-//[sphere, cone, hog, wireSphere, phong, invaders]	
-	
-	Root root(NULL, "root");
-	
-	
-	
-	Cone cone(10);
-	ISOSphere sphere(2);
-	
-	cone.buffer();
-	cone.bind();
-	sphere.buffer();
-	sphere.bind();
-	
-	root.AddChildNode(Leaf(NULL,sphere,"sphere"));
-	root.AddChildNode(Leaf(NULL,cone,"cone"));
-	root.AddChildNode(Leaf(NULL,sphere,"hog"));
-	root.AddChildNode(Leaf(NULL,sphere,"phong"));
-	
-	Node extension(root,"extension");
-	
-	root.AddChildNode(extension);
-	
-	extension.AddChildNode(Leaf(NULL,sphere,"sphere"))
-	extension.AddChildNode(Leaf(NULL,cone,"cone"))
 
 	//create program from shaders
 	
 	std::vector<GLint> shaders;
 	shaders.push_back(create_shader("SimpleVertexShader.vertexshader", GL_VERTEX_SHADER));
 	shaders.push_back(create_shader("PhongShader.fragmentshader", GL_FRAGMENT_SHADER));
-	
 	GLuint standard_program = link_shaders(shaders);
 	
 	
@@ -138,46 +86,18 @@ int main()
 	Animation animation(renderer);
 	animation.buffer();
 	
-	shaders.push_back(create_shader("Normals.geometryshader", GL_GEOMETRY_SHADER));
-	GLuint normals_program = link_shaders(shaders);
-	
-	NormalsRenderer normalsRenderer(normals_program, mv_matrix, p_matrix, 0.5f);
 	
 	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	while (running)
 	{
 		view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
 		model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
-		renderer._mv_matrix = normalsRenderer._mv_matrix = view * model;
+		renderer._mv_matrix = view * model;
 		
-		switch(scene){
-			case SPHERE:
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				renderer.bind();
-				sphere.draw();
-				break;
-			case CONE:
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				renderer.bind();
-				cone.draw();
-				break;
-			case HOG_SPHERE:
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				renderer.bind();
-				sphere.draw();
-				normalsRenderer.bind();
-				sphere.draw();
-				break;
-			case PHONG_SPHERE:
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-				renderer.bind();
-				sphere.draw();
-				break;
-			case EXTENSION:
-				animation.draw(glfwGetTime());
-				break;
-		}
+
+		animation.draw(glfwGetTime());
 
 		glfwSwapBuffers();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
