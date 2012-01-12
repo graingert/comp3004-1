@@ -20,8 +20,9 @@
 using namespace graingert;
 bool running = true;
 bool tour = false;
-int speed = 100;
-int direction = 0;
+int speed = 0;
+int pann = 0;
+int up = 0;
 
 typedef enum Scene{
 	SPHERE,
@@ -54,18 +55,33 @@ void key_callback(int key, int state){
 				tour = true;
 				break;
 			case GLFW_KEY_LEFT:
-				direction--;
+				pann++;
 				break;
 			case GLFW_KEY_RIGHT:
-				direction++;
+				pann--;
+				break;
+			case GLFW_KEY_PAGEUP:
+				up++;
+				break;
+			case GLFW_KEY_PAGEDOWN:
+				up--;
+				break;
+			case 'R':
+				glfwSetTime(0);
 				break;
 			case GLFW_KEY_DOWN:
 				if (speed > 0){
 					speed--;
 				}
 				break;
+			case GLFW_KEY_UP:
+				speed++;
 		}
 	}
+}
+
+glm::mat4 get_view(float time){
+	return glm::lookAt(glm::vec3(10,time*10,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
 }
 
 
@@ -127,18 +143,14 @@ int main()
 	
 	while (running)
 	{
-		view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,direction), glm::vec3(0,1,0));
 		model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		renderer._mv_matrix = view * model;
 		
 		if (tour){
-			animation.view = glm::lookAt(glm::vec3(10,glfwGetTime()*(speed/50.0),0), glm::vec3(0,0,0), glm::vec3(0,1,0));
+			animation.view = get_view(glfwGetTime());
 		} else {
-			animation.view = view;
+			animation.view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,up,pann), glm::vec3(0,1,0));
 		}
-		
-		std::cout << direction;
-		std::flush(std::cout);
 		
 		animation.draw(glfwGetTime());
 
