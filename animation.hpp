@@ -15,10 +15,11 @@ namespace graingert{
 			Cone *cone;
 			ISOSphere *spherea, *sphereb;
 			Renderer *_renderer;
-			glm::mat4 perspective,view,cone_m,spherea_m,sphereb_m;
+			glm::mat4 perspective,cone_m,spherea_m,sphereb_m;
 			void setmatrix(float time);
 			float oldtime;
 		public:
+			glm::mat4 view;
 			Animation(Renderer& renderer);
 			void buffer();
 			void draw(float time);

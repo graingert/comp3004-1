@@ -19,6 +19,9 @@
 
 using namespace graingert;
 bool running = true;
+bool tour = false;
+int speed = 100;
+int direction = 0;
 
 typedef enum Scene{
 	SPHERE,
@@ -28,10 +31,41 @@ typedef enum Scene{
 	EXTENSION
 } Scene;
 
-Scene scene = SPHERE;
-
 void key_callback(int key, int state){
-
+	if (state == GLFW_RELEASE){
+		if (tour){
+			switch (key){
+				case 'Q':
+				case GLFW_KEY_ESC:
+					running = false;
+					break;
+				case 'E':
+					tour = false;
+					break;
+			}
+			return;		
+		}
+		switch(key){
+			case 'Q':
+			case GLFW_KEY_ESC:
+				running = false;
+				break;
+			case 'T':
+				tour = true;
+				break;
+			case GLFW_KEY_LEFT:
+				direction--;
+				break;
+			case GLFW_KEY_RIGHT:
+				direction++;
+				break;
+			case GLFW_KEY_DOWN:
+				if (speed > 0){
+					speed--;
+				}
+				break;
+		}
+	}
 }
 
 
@@ -83,7 +117,7 @@ int main()
 	glm::mat4 mv_matrix = view * model;
 	
 	Renderer renderer(standard_program, mv_matrix, p_matrix);
-	MeshNode::renderer = &renderer;
+	
 	Animation animation(renderer);
 	animation.buffer();
 	
@@ -93,11 +127,19 @@ int main()
 	
 	while (running)
 	{
-		view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
+		view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,0,direction), glm::vec3(0,1,0));
 		model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		renderer._mv_matrix = view * model;
 		
-
+		if (tour){
+			animation.view = glm::lookAt(glm::vec3(10,glfwGetTime()*(speed/50.0),0), glm::vec3(0,0,0), glm::vec3(0,1,0));
+		} else {
+			animation.view = view;
+		}
+		
+		std::cout << direction;
+		std::flush(std::cout);
+		
 		animation.draw(glfwGetTime());
 
 		glfwSwapBuffers();

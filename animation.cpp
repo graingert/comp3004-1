@@ -47,6 +47,8 @@ namespace graingert{
 		_renderer->_mv_matrix = view * sphereb_m;
 		_renderer->bind();
 		sphereb->draw();
+		
+		
 	}
 }
 
