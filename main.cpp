@@ -9,6 +9,7 @@
 #include <vector>
 #include <stddef.h>
 #include <iostream>
+#include <cmath>
 
 #include "mesh.hpp"
 #include "shader.hpp"
@@ -19,7 +20,7 @@
 
 using namespace graingert;
 bool running = true;
-bool tour = false;
+bool tour = true;
 int speed = 0;
 int pann = 0;
 int up = 0;
@@ -31,6 +32,13 @@ typedef enum Scene{
 	PHONG_SPHERE,
 	EXTENSION
 } Scene;
+
+typedef struct KeyFrame{
+	float time;
+	glm::vec3 position;
+	glm::vec3 lookat;
+	glm::vec3 rotation;
+} KeyFrame;
 
 void key_callback(int key, int state){
 	if (state == GLFW_RELEASE){
@@ -80,8 +88,35 @@ void key_callback(int key, int state){
 	}
 }
 
+glm::vec3 calc_tween(glm::vec3 a, glm::vec3 b, float ratio){
+	return (a*ratio) + (b*(1-ratio));
+}
+
+float calc_ratio(float a, float b, float d){
+	return (d-b)/(a-b);
+}
+
 glm::mat4 get_view(float time){
-	return glm::lookAt(glm::vec3(10,time*10,0), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	time = fmod(time,10.0f);
+	
+	KeyFrame frames[] {
+		{0.0f, glm::vec3(10,10,0), glm::vec3(0,0,0), glm::vec3(0.0f,1.0f,0.0f)},
+		{5.0f, glm::vec3(10,20,0), glm::vec3(0,20,0), glm::vec3(0.0f,20.0f,0.0f)},
+		{10.0f, glm::vec3(10,10,0), glm::vec3(0,0,0), glm::vec3(0.0f,1.0f,0.0f)},
+	};
+	
+	for (int i = 0; i<3; i++){
+		if (time < frames[i].time){
+			
+			float ratio = calc_ratio(frames[i-1].time, frames[i].time, time);
+			
+			return glm::lookAt(
+				calc_tween(frames[i-1].position,frames[i].position,ratio),
+				calc_tween(frames[i-1].lookat,frames[i].lookat,ratio),
+				calc_tween(frames[i-1].rotation,frames[i].rotation,ratio)
+			);
+		}
+	}
 }
 
 
@@ -152,7 +187,7 @@ int main()
 			animation.view = glm::lookAt(glm::vec3(10,0,0), glm::vec3(0,up,pann), glm::vec3(0,1,0));
 		}
 		
-		animation.draw(glfwGetTime());
+		animation.draw(0);
 
 		glfwSwapBuffers();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
