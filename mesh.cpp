@@ -1,5 +1,7 @@
 #include "mesh.hpp"
 #include <vector>
+#include "models/gourd.h"
+#include <iostream>
 
 using namespace std;
 
@@ -208,6 +210,21 @@ namespace graingert{
 		// store it, return index
 		vertices.push_back(middle);
 		return vertices.size() - 1;
+	}
+	
+	Gourd::Gourd(){
+		
+		for (int i=0; i++; i<(numGourdVerts)){
+			Vertex v;
+			v.color = RED;
+			v.position = glm::vec4(GourdVerts[i][0],GourdVerts[i][1], GourdVerts[i][2], 1);
+			v.normal = glm::vec3(GourdVertNorms[i][0], GourdVerts[i][1], GourdVerts[i][2]);
+			vertices.push_back(v);
+		}
+	
+		for (int i=0; i++; i<(numGourdFaces*3)){
+			indices.push_back(*GourdFaces[i]);
+		}
 	}
 		
 }

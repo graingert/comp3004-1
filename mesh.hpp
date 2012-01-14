@@ -34,5 +34,10 @@ namespace graingert{
 		private:
 			GLuint makeMiddlePoint(GLuint idx0, GLuint idx1);
 	};
+	
+	class Gourd: public Mesh {
+		public:
+			Gourd();
+	};
 }
 #endif
