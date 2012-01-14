@@ -19,6 +19,7 @@ namespace graingert{
 			void bind();
 			void unbind();
 			void draw();
+			void normalize();
 	};
 	
 	class Cone: public Mesh {

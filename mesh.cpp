@@ -3,6 +3,7 @@
 #include "models/gourd.h"
 #include <iostream>
 
+
 using namespace std;
 
 namespace graingert{
@@ -50,6 +51,25 @@ namespace graingert{
 		unbind();
 	}
 	
+	void Mesh::normalize(){
+		//based on code from http://glm.g-truc.net/code.html
+		for (int i=0; i<indices.size(); i+=3) {
+			glm::vec3 const & a = vertices[indices[i]].position.xyz;
+			glm::vec3 const & b = vertices[indices[(i+1)]].position.xyz;
+			glm::vec3 const & c = vertices[indices[(i+2)]].position.xyz;
+			
+			glm::vec3 normal = glm::cross(c -a, b - a);
+			  
+			vertices[indices[i]].normal += normal;
+			vertices[indices[(i+1)]].normal += normal;
+			vertices[indices[(i+2)]].normal += normal;
+		}
+		
+		for (int i=0; i<vertices.size(); i++) {
+			vertices[i].normal = glm::normalize(vertices[i].normal);
+		}
+		
+	}
 	
 	Cone::Cone(GLuint facets){
 	
@@ -236,32 +256,34 @@ namespace graingert{
 	}
 	
 	Terrian::Terrian(){
-		int height = 4;
-		int width = 4;
+		int height = 10;
+		int width = 10;
 		
-		float f_height = float(height);
-		float f_width = float(width);
-		for (int x=0; x<=width; x++){
-			for (int y=0; y<=height; y++){
+		float f_height = float(height)/2.0f;
+		float f_width = float(width)/2.0f;
+		
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
 				Vertex v;
+				v.position = glm::vec4((y/f_height)-1, sin(x+y), (x/f_width)-1, 1.0f);
 				v.color = RED;
-				v.position = glm::vec4(x/width, y/height, 0.0f, 1.0f);
 				v.normal = glm::vec3(1);
 				vertices.push_back(v);
 			}
 		}
-		
-		//wire
-		for (int x=0; x<width; x++){
-			for (int y=0; y<height; y++){
-				indices.push_back(access(x,y,width));
-				indices.push_back(access(x+1,y,width));
-				indices.push_back(access(x,y+1,width));
-				
-				indices.push_back(access(x+1,y+1,width));
-				indices.push_back(access(x+1,y,width));
-				indices.push_back(access(x,y+1,width));
+	
+		for (int y = 1; y < height; y++) {
+			int baseY = y * width;
+			for (int x = 0; x < width - 1; x++) {
+				indices.push_back(baseY + x);
+				indices.push_back(baseY - width + x);
+				indices.push_back(baseY + x + 1);
+	
+				indices.push_back(baseY - width + x);
+				indices.push_back(baseY - width + x + 1);
+				indices.push_back(baseY + x + 1);
 			}
 		}
+		normalize();
 	}
 }

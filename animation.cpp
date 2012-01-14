@@ -45,6 +45,10 @@ namespace graingert{
 		_renderer->bind();
 		sphereb->draw();
 		
+		_renderer->_mv_matrix = view * glm::translate(glm::mat4(1), glm::vec3(0,-10,0)) * glm::scale(glm::mat4(1), glm::vec3(10, 0.9, 10));
+		_renderer->bind();
+		terrian->draw();
+		
 		
 		glm::mat4 moon(1);
 		moon = glm::scale(moon, glm::vec3(0.3));
@@ -57,7 +61,6 @@ namespace graingert{
 		_renderer->_mv_matrix = view * cone_m;
 		_renderer->bind();
 		gourd->draw();
-		terrian->draw();
 		
 		//_renderer->_mv_matrix = view * glm::scale(spherea_m, glm::vec3(3));
 		//_renderer->bind();
