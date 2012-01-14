@@ -18,7 +18,7 @@ const vec4 light_specular = vec4(1.0, 1.0, 1.0, 1.0);
 
 void main()
 {
-    vec3 mv_light_direction = (mv_matrix * vec4(light_direction, 0.0)).xyz,
+    vec3 mv_light_direction = (light_direction).xyz,
          normal = normalize(atribs.normal.xyz),
          eye = normalize(atribs.eye_position.xyz),
          reflection = reflect(mv_light_direction, normal);
