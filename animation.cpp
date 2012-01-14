@@ -10,6 +10,7 @@ namespace graingert{
 		spherea = new ISOSphere(0);
 		sphereb = new ISOSphere(3);
 		gourd = new Gourd();
+		terrian = new Terrian();
 		oldtime = 0.0f;
 		setmatrix(0.0f);
 	}
@@ -33,6 +34,7 @@ namespace graingert{
 		spherea->buffer();
 		sphereb->buffer();
 		gourd->buffer();
+		terrian->buffer();
 	}
 	
 	void Animation::draw(float time){
@@ -42,6 +44,7 @@ namespace graingert{
 		_renderer->_mv_matrix = view;
 		_renderer->bind();
 		sphereb->draw();
+		
 		
 		glm::mat4 moon(1);
 		moon = glm::scale(moon, glm::vec3(0.3));
@@ -54,6 +57,7 @@ namespace graingert{
 		_renderer->_mv_matrix = view * cone_m;
 		_renderer->bind();
 		gourd->draw();
+		terrian->draw();
 		
 		//_renderer->_mv_matrix = view * glm::scale(spherea_m, glm::vec3(3));
 		//_renderer->bind();

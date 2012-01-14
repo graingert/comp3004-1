@@ -231,32 +231,36 @@ namespace graingert{
 		}
 	}
 	
+	int access(int x,int y,int width){
+		return (y*width)+x;
+	}
+	
 	Terrian::Terrian(){
-		int xmax = 4;
-		int zmax = 4;
+		int height = 4;
+		int width = 4;
 		
-		float f_xmax = float(xmax);
-		float f_zmax = float(zmax);
-		for (int x=0; x<=xmax; x++){
-			for (int z=0; z<=zmax; z++){
+		float f_height = float(height);
+		float f_width = float(width);
+		for (int x=0; x<=width; x++){
+			for (int y=0; y<=height; y++){
 				Vertex v;
 				v.color = RED;
-				v.position = glm::vec4(x/f_xmax, z/f_zmax, 0.0f, 1.0f);
+				v.position = glm::vec4(x/width, y/height, 0.0f, 1.0f);
 				v.normal = glm::vec3(1);
 				vertices.push_back(v);
 			}
 		}
 		
 		//wire
-		for (int x=0; x<xmax; x++){
-			for (int z=0; z<zmax; z++){
-				indices.push_back(x);
-				indices.push_back(x+1);
-				indices.push_back(x+zmax);
+		for (int x=0; x<width; x++){
+			for (int y=0; y<height; y++){
+				indices.push_back(access(x,y,width));
+				indices.push_back(access(x+1,y,width));
+				indices.push_back(access(x,y+1,width));
 				
-				indices.push_back(x);
-				indices.push_back(x+1);
-				indices.push_back(x+zmax);
+				indices.push_back(access(x+1,y+1,width));
+				indices.push_back(access(x+1,y,width));
+				indices.push_back(access(x,y+1,width));
 			}
 		}
 	}

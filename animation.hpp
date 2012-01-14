@@ -15,6 +15,7 @@ namespace graingert{
 			Cone *cone;
 			ISOSphere *spherea, *sphereb;
 			Gourd *gourd;
+			Terrian *terrian;
 			Renderer *_renderer;
 			glm::mat4 perspective,cone_m,spherea_m,sphereb_m;
 			void setmatrix(float time);
