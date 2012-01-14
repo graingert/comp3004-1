@@ -53,7 +53,7 @@ namespace graingert{
 		
 		_renderer->_mv_matrix = view * cone_m;
 		_renderer->bind();
-		cone->draw();
+		gourd->draw();
 		
 		//_renderer->_mv_matrix = view * glm::scale(spherea_m, glm::vec3(3));
 		//_renderer->bind();

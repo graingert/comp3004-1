@@ -39,5 +39,10 @@ namespace graingert{
 		public:
 			Gourd();
 	};
+	
+	class Terrian: public Mesh{
+		public:
+			Terrian();
+	};
 }
 #endif

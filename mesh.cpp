@@ -213,18 +213,51 @@ namespace graingert{
 	}
 	
 	Gourd::Gourd(){
+		//Loads objects generated using http://people.sc.fsu.edu/~jburkardt/pl_src/obj2opengl/obj2opengl.html
 		
-		for (int i=0; i++; i<(numGourdVerts)){
+		for (int i=0; i<(numGourdVerts); i++){
 			Vertex v;
-			v.color = RED;
+			v.color = BLUE;
 			v.position = glm::vec4(GourdVerts[i][0],GourdVerts[i][1], GourdVerts[i][2], 1);
 			v.normal = glm::vec3(GourdVertNorms[i][0], GourdVerts[i][1], GourdVerts[i][2]);
 			vertices.push_back(v);
 		}
-	
-		for (int i=0; i++; i<(numGourdFaces*3)){
-			indices.push_back(*GourdFaces[i]);
+		
+		
+		for (int i=0; i<(numGourdFaces); i++){
+			indices.push_back(GourdFaces[i][0]);
+			indices.push_back(GourdFaces[i][1]);
+			indices.push_back(GourdFaces[i][2]);
 		}
 	}
+	
+	Terrian::Terrian(){
+		int xmax = 4;
+		int zmax = 4;
 		
+		float f_xmax = float(xmax);
+		float f_zmax = float(zmax);
+		for (int x=0; x<=xmax; x++){
+			for (int z=0; z<=zmax; z++){
+				Vertex v;
+				v.color = RED;
+				v.position = glm::vec4(x/f_xmax, z/f_zmax, 0.0f, 1.0f);
+				v.normal = glm::vec3(1);
+				vertices.push_back(v);
+			}
+		}
+		
+		//wire
+		for (int x=0; x<xmax; x++){
+			for (int z=0; z<zmax; z++){
+				indices.push_back(x);
+				indices.push_back(x+1);
+				indices.push_back(x+zmax);
+				
+				indices.push_back(x);
+				indices.push_back(x+1);
+				indices.push_back(x+zmax);
+			}
+		}
+	}
 }
