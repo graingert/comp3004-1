@@ -9,6 +9,7 @@ namespace graingert{
 		cone = new Cone(10);
 		spherea = new ISOSphere(0);
 		sphereb = new ISOSphere(3);
+		gourd = new Gourd();
 		oldtime = 0.0f;
 		setmatrix(0.0f);
 	}
@@ -31,22 +32,36 @@ namespace graingert{
 		cone->buffer();
 		spherea->buffer();
 		sphereb->buffer();
+		gourd->buffer();
 	}
 	
 	void Animation::draw(float time){
 		setmatrix(time);
 		_renderer->_p_matrix = perspective;
-		_renderer->_mv_matrix = view * cone_m;
-		_renderer->bind();
-
-		cone->draw();
-		_renderer->_mv_matrix = view * spherea_m;
-		_renderer->bind();
-		spherea->draw();
-
-		_renderer->_mv_matrix = view * sphereb_m;
+		
+		_renderer->_mv_matrix = view;
 		_renderer->bind();
 		sphereb->draw();
+		
+		glm::mat4 moon(1);
+		moon = glm::scale(moon, glm::vec3(0.3));
+		moon = glm::translate(moon, glm::vec3(10,0,0));
+		glm::mat4 rotate = glm::rotate(glm::mat4(1), (float)(50.0 * time), glm::vec3(0,1,0));
+		_renderer->_mv_matrix = view * rotate * moon;
+		_renderer->bind();
+		sphereb->draw();
+		
+		_renderer->_mv_matrix = view * cone_m;
+		_renderer->bind();
+		cone->draw();
+		
+		//_renderer->_mv_matrix = view * glm::scale(spherea_m, glm::vec3(3));
+		//_renderer->bind();
+		//spherea->draw();
+
+		//_renderer->_mv_matrix = view * sphereb_m;
+		//_renderer->bind();
+		//sphereb->draw();
 		
 		
 	}
