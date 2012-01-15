@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <iostream>
 #include <cmath>
+#include <cstdio>
 
 #include "mesh.hpp"
 #include "shader.hpp"
@@ -17,6 +18,8 @@
 #include "renderer.hpp"
 #include "animation.hpp"
 #include "scene_graph.hpp"
+
+void print_camera_details();
 
 using namespace graingert;
 bool running = true;
@@ -63,10 +66,10 @@ void key_callback(int key, int state){
 			case GLFW_KEY_RIGHT:
 				pann--;
 				break;
-			case GLFW_KEY_PAGEUP:
+			case '8':
 				up++;
 				break;
-			case GLFW_KEY_PAGEDOWN:
+			case '2':
 				up--;
 				break;
 			case 'R':
@@ -81,21 +84,46 @@ void key_callback(int key, int state){
 				break;
 			case GLFW_KEY_UP:
 				speed++;
+				break;
+			case GLFW_KEY_PAGEUP:
+				cam_position.y += 0.5;
+				break;
+			case GLFW_KEY_PAGEDOWN:
+				cam_position.y -= 0.5;
+				break;
+			case 'P':
+				print_camera_details();
+				break;
 		}
 	}
 }
 
+void print_camera_details(){
+	printf(
+		"glm::vec3(%f,%f,%f), glm::vec3(%f,%f,%f), glm::vec3(0.0f,1.0f,0.0f);\n",
+		cam_position.x,
+		cam_position.y,
+		cam_position.z,
+		0.0f, (float) up, (float) pann
+	);
+}
+
+
 glm::mat4 get_view(float time){
-	time = fmod(time,20.0f);
+	time = fmod(time,30.0f);
 	
 	KeyFrame frames[] {
-		{0.0f, glm::vec3(10,10,0), glm::vec3(0,0,0), glm::vec3(0.0f,1.0f,0.0f)},
-		{5.0f, glm::vec3(10,20,0), glm::vec3(0,20,0), glm::vec3(0.0f,20.0f,0.0f)},
-		{10.0f, glm::vec3(10,5,0), glm::vec3(0,0,0), glm::vec3(0.0f,1.0f,0.0f)},
-		{20.0f, glm::vec3(10,10,0), glm::vec3(0,0,0), glm::vec3(0.0f,1.0f,0.0f)},
+		{0.0f, glm::vec3(10.000000,22.500000,0.000000), glm::vec3(0.000000,0.000000,0.000000), glm::vec3(0.0f,1.0f,0.0f)},
+		{5.0f, glm::vec3(9.433834,0.000000,0.000000), glm::vec3(0.000000,-2.000000,1.000000), glm::vec3(0.0f,1.0f,0.0f)},
+		{10.0f, glm::vec3(2.750712,-1.416841,4.250523), glm::vec3(0.000000,-2.000000,7.000000), glm::vec3(0.0f,1.0f,0.0f)},
+		{15.0f, glm::vec3(1.681703,-4.163660,4.990977), glm::vec3(0.000000,-2.000000,2.000000), glm::vec3(0.0f,1.0f,0.0f)},
+		{20.0f, glm::vec3(3.624603,2.198082,-2.230921), glm::vec3(0.000000,0.000000,0.000000), glm::vec3(0.0f,1.0f,0.0f)},
+		{30.0f, glm::vec3(10.000000,22.500000,0.000000), glm::vec3(0.000000,0.000000,0.000000), glm::vec3(0.0f,1.0f,0.0f)},
 	};
 	
-	for (int i = 0; i<3; i++){
+	//glm::vec3(10.000000,0.000000,0.000000), glm::vec3(0.000000,0.000000,0.000000), glm::vec3(0.0f,1.0f,0.0f)
+	
+	for (int i = 0; i<6; i++){
 		if (time < frames[i].time){
 			
 			float ratio = calc_ratio(frames[i-1].time, frames[i].time, time);
