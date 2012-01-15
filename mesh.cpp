@@ -54,7 +54,7 @@ namespace graingert{
 	
 	void Mesh::normalize(){
 		//based on code from http://glm.g-truc.net/code.html
-		for (int i=0; i<indices.size(); i+=3) {
+		for (unsigned int i=0; i<indices.size(); i+=3) {
 			glm::vec3 const & a = vertices[indices[i]].position.xyz;
 			glm::vec3 const & b = vertices[indices[(i+1)]].position.xyz;
 			glm::vec3 const & c = vertices[indices[(i+2)]].position.xyz;
@@ -66,7 +66,7 @@ namespace graingert{
 			vertices[indices[(i+2)]].normal += normal;
 		}
 		
-		for (int i=0; i<vertices.size(); i++) {
+		for (unsigned int i=0; i<vertices.size(); i++) {
 			vertices[i].normal = glm::normalize(vertices[i].normal);
 		}
 		
@@ -86,7 +86,7 @@ namespace graingert{
 		
 		float slice_angle = TAU/ ((float) facets);
 		
-		for (int i=0; i<facets; i++){
+		for (unsigned int i=0; i<facets; i++){
 			float theta = slice_angle * i;
 			float x = 0.5f * cos (theta);
 			float z = 0.5f * sin (theta);
@@ -102,7 +102,7 @@ namespace graingert{
 	}
 	
 	void Cone::wireCone(GLuint idxs[], GLuint center, GLuint n ){
-		for (int i = 1; i<n; i++){
+		for (unsigned int i = 1; i<n; i++){
 			indices.push_back(idxs[i-1]);
 			indices.push_back(idxs[i]);
 			indices.push_back(center);
@@ -205,7 +205,7 @@ namespace graingert{
 		//Because we are drawing a unit sphere the normals are the same as
 		//the points.
 		
-		for (int i = 0; i < vertices.size(); i++){
+		for (unsigned int i = 0; i < vertices.size(); i++){
 			vertices[i].normal = vertices[i].position.xyz;
 		}
 	}

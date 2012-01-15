@@ -149,8 +149,6 @@ glm::mat4 get_view(float time){
 		{30.0f, glm::vec3(10.000000,22.500000,0.000000), glm::vec3(0.000000,0.000000,0.000000), glm::vec3(0.0f,1.0f,0.0f)},
 	};
 	
-	//glm::vec3(10.000000,0.000000,0.000000), glm::vec3(0.000000,0.000000,0.000000), glm::vec3(0.0f,1.0f,0.0f)
-	
 	for (int i = 0; i<6; i++){
 		if (time < frames[i].time){
 			
@@ -163,6 +161,7 @@ glm::mat4 get_view(float time){
 			);
 		}
 	}
+	return glm::lookAt(glm::vec3(10.000000,22.500000,0.000000), glm::vec3(0.000000,0.000000,0.000000), glm::vec3(0.0f,1.0f,0.0f));
 }
 
 
@@ -227,7 +226,6 @@ int main()
 	{
 		float time = glfwGetTime();
 		float delta = time - prev_time;
-		float prev_time = time;
 		
 		model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		renderer._mv_matrix = view * model;
