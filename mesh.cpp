@@ -297,9 +297,9 @@ namespace graingert{
 			int baseY = y * width;
 			for (int x = 0; x < width - 1; x++) {
 				int a = access(x,y,width);
-				int b = access(x,y,width) - width;
+				int b = access(x,y-1,width);
 				int c = access(x+1,y,width);
-				int d = access(x+1,y,width) - width;
+				int d = access(x+1,y-1,width);
 				
 				indices.push_back(a);
 				indices.push_back(b);
