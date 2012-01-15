@@ -63,7 +63,7 @@ namespace graingert{
 		_renderer->bind();
 		terrian->draw();
 		
-		float miss_time = fmod(time, 10.0f);
+		float miss_time = fmod(time, 4.0f);
 		
 		PosFrame frames[] {
 			{0.0f, glm::vec3(10,-20,0)},

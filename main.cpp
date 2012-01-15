@@ -20,6 +20,7 @@
 #include "scene_graph.hpp"
 
 void print_camera_details();
+void print_help();
 
 using namespace graingert;
 bool running = true;
@@ -75,6 +76,8 @@ void key_callback(int key, int state){
 			case 'R':
 				glfwSetTime(0);
 				prev_time = 0.0f;
+				break;
+			case 'P':
 				cam_position = glm::vec3(10, 0, 0);
 				break;
 			case GLFW_KEY_DOWN:
@@ -91,8 +94,11 @@ void key_callback(int key, int state){
 			case GLFW_KEY_PAGEDOWN:
 				cam_position.y -= 0.5;
 				break;
-			case 'P':
+			case 'D':
 				print_camera_details();
+				break;
+			case 'H':
+				print_help();
 				break;
 		}
 	}
@@ -108,6 +114,26 @@ void print_camera_details(){
 	);
 }
 
+void print_help(){
+	printf(
+"<ESC>, Q    Exit the program. \n\
+P           Move to predefined location where screen shot was taken\n\
+T           Start the tour, ignoring all key presses except\n\
+            E, Q and <ESC> \n\
+E           Exit the tour mode otherwise ignored. \n\
+<LEFT>      Turn camera view direction to left.\n\
+<RIGHT>     To the right.\n\
+<PAGE UP>   Increase the elevation of the camera\n\
+<PAGE DOWN> Decrease elevation.\n\
+<UP>        Increase the forward speed of the camera.\n\
+<DOWN>      Decrease or make the camera move more\n\
+            slowly.\n\
+R           Reset all animation\n\
+H           Display this help message\n\
+D           Dump camera postion\n"
+	);
+	std::flush(std::cout);
+}
 
 glm::mat4 get_view(float time){
 	time = fmod(time,30.0f);
