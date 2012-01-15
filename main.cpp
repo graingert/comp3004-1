@@ -35,13 +35,6 @@ typedef enum Scene{
 	EXTENSION
 } Scene;
 
-typedef struct KeyFrame{
-	float time;
-	glm::vec3 eye;
-	glm::vec3 target;
-	glm::vec3 up;
-} KeyFrame;
-
 void key_callback(int key, int state){
 	if (state == GLFW_RELEASE){
 		if (tour){
@@ -90,14 +83,6 @@ void key_callback(int key, int state){
 				speed++;
 		}
 	}
-}
-
-glm::vec3 calc_tween(glm::vec3 a, glm::vec3 b, float ratio){
-	return (a*ratio) + (b*(1-ratio));
-}
-
-float calc_ratio(float a, float b, float d){
-	return (d-b)/(a-b);
 }
 
 glm::mat4 get_view(float time){
@@ -153,7 +138,7 @@ int main()
 	glfwSetWindowTitle("OpenGL");
 
 	glClearColor(0x07/255.0f, 0x76/255.0f, 0xA0/255.0f, 1.0f);
-	
+	glClearColor(0,0,0,1);
 	//Enable VSync
 	glfwSwapInterval(1);
 	

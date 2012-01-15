@@ -11,8 +11,8 @@
 #define PI  (3.14159265359)
 #define TAU (6.28318530718)
 #define RED (glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ))
-#define BLUE (glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ))
-#define GREEN (glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ))
+#define BLUE (glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ))
+#define GREEN (glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ))
 
 namespace graingert {
 	class Vertex {
@@ -22,5 +22,20 @@ namespace graingert {
 			glm::vec3 normal;
 	};
 }
+
+glm::vec3 calc_tween(glm::vec3 a, glm::vec3 b, float ratio);
+float calc_ratio(float a, float b, float d);
+
+typedef struct KeyFrame{
+	float time;
+	glm::vec3 eye;
+	glm::vec3 target;
+	glm::vec3 up;
+} KeyFrame;
+
+typedef struct PosFrame{
+	float time;
+	glm::vec3 pos;
+} PosFrame;
 
 #endif

@@ -90,7 +90,7 @@ namespace graingert{
 			float x = 0.5f * cos (theta);
 			float z = 0.5f * sin (theta);
 			
-			Vertex v = {glm::vec4(x,0.f,z,1.0f),glm::vec4(.0f),glm::vec3(.0f)};
+			Vertex v = {glm::vec4(x,0.f,z,1.0f),GREEN,glm::vec3(1)};
 			vertices.push_back(v);
 			idxs[i] = vertices.size()-1;
 		}
@@ -265,8 +265,14 @@ namespace graingert{
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				Vertex v;
-				v.position = glm::vec4((y/f_height)-1, sin(x+y), (x/f_width)-1, 1.0f);
-				v.color = RED;
+				float z = sin(x+y);
+				v.position = glm::vec4((y/f_height)-1, z, (x/f_width)-1, 1.0f);
+				
+				if (z>0.5){
+					v.color = RED;
+				} else {
+					v.color = BLUE;
+				}
 				v.normal = glm::vec3(1);
 				vertices.push_back(v);
 			}

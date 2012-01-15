@@ -1,5 +1,8 @@
 #include "animation.hpp"
 #include <iostream>
+#include <cmath>
+#include "utils.hpp"
+
 using namespace std;
 namespace graingert{
 	Animation::Animation(Renderer& renderer){
@@ -41,13 +44,52 @@ namespace graingert{
 		setmatrix(time);
 		_renderer->_p_matrix = perspective;
 		
-		_renderer->_mv_matrix = view;
+		
+		glm::mat4 spaceship(1);
+		spaceship = glm::scale(spaceship, glm::vec3(1.,0.5,1.));
+		spaceship = glm::translate(spaceship, glm::vec3(-1,0,1));
+		_renderer->_mv_matrix = view * spaceship;
 		_renderer->bind();
 		sphereb->draw();
+		
+		glm::mat4 abduct(1);
+		abduct = glm::scale(abduct, glm::vec3(1.,10, 1));
+		abduct = glm::translate(abduct, glm::vec3(-1,-1,1));
+		_renderer->_mv_matrix = view * abduct;
+		_renderer->bind();
+		cone->draw();
 		
 		_renderer->_mv_matrix = view * glm::translate(glm::mat4(1), glm::vec3(0,-10,0)) * glm::scale(glm::mat4(1), glm::vec3(10, 0.9, 10));
 		_renderer->bind();
 		terrian->draw();
+		
+		float miss_time = fmod(time, 10.0f);
+		
+		PosFrame frames[] {
+			{0.0f, glm::vec3(10,-20,0)},
+			{1.0f, glm::vec3(-2,0,1)},
+			{1.0f, glm::vec3(0,-20,10)},
+			{2.0f, glm::vec3(-2,0,1)},
+			{2.0f, glm::vec3(10,-20,10)},
+			{3.0f, glm::vec3(-2,0,1)},
+		};
+	
+		for (int i = 0; i<6; i++){
+			if (miss_time < frames[i].time){
+				
+				float ratio = calc_ratio(frames[i-1].time, frames[i].time, time);
+				
+				glm::mat4 missile(1);
+				missile = glm::scale(missile, glm::vec3(0.3, 0.3, 0.3));
+				
+				glm::vec3 position = calc_tween(frames[i-1].pos,frames[i].pos,ratio);
+				missile = glm::translate(missile, position);
+				
+				_renderer->_mv_matrix = view * missile;
+				_renderer->bind();
+				spherea->draw();	
+			}
+		}
 		
 		
 		glm::mat4 moon(1);
