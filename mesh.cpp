@@ -294,7 +294,6 @@ namespace graingert{
 		}
 	
 		for (int y = 1; y < height; y++) {
-			int baseY = y * width;
 			for (int x = 0; x < width - 1; x++) {
 				int a = access(x,y,width);
 				int b = access(x,y-1,width);
