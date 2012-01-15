@@ -281,13 +281,18 @@ namespace graingert{
 		for (int y = 1; y < height; y++) {
 			int baseY = y * width;
 			for (int x = 0; x < width - 1; x++) {
-				indices.push_back(baseY + x);
-				indices.push_back(baseY - width + x);
-				indices.push_back(baseY + x + 1);
+				int a = access(x,y,width);
+				int b = access(x,y,width) - width;
+				int c = access(x+1,y,width);
+				int d = access(x+1,y,width) - width;
+				
+				indices.push_back(a);
+				indices.push_back(b);
+				indices.push_back(c);
 	
-				indices.push_back(baseY - width + x);
-				indices.push_back(baseY - width + x + 1);
-				indices.push_back(baseY + x + 1);
+				indices.push_back(b);
+				indices.push_back(d);
+				indices.push_back(c);
 			}
 		}
 		normalize();

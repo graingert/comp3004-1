@@ -179,6 +179,7 @@ int main()
 		if (tour){
 			animation.view = get_view(glfwGetTime());
 		} else {
+			
 			glm::vec3 target(0,up,pann);
 			glm::vec3 direction = glm::normalize(target - cam_position);
 			
