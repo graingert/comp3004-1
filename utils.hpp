@@ -13,6 +13,9 @@
 #define RED (glm::vec4 ( 1.0f, 0.0f, 0.0f, 1.0f ))
 #define BLUE (glm::vec4 ( 0.0f, 0.0f, 1.0f, 1.0f ))
 #define GREEN (glm::vec4 ( 0.0f, 1.0f, 0.0f, 1.0f ))
+#define WHITE (glm::vec4 ( 1.0f, 1.0f, 1.0f, 1.0f ))
+#define LIGHT_BLUE (glm::vec4 (0x07/255.0f, 0x76/255.0f, 0xA0/255.0f, 1.0f))
+#define SAND (glm::vec4 (0xcd/255.0f, 0xa8/255.0f, 0x64/255.0f, 1.0f))
 
 namespace graingert {
 	class Vertex {

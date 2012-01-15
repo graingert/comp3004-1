@@ -53,13 +53,13 @@ namespace graingert{
 		sphereb->draw();
 		
 		glm::mat4 abduct(1);
-		abduct = glm::scale(abduct, glm::vec3(1.,10, 1));
+		abduct = glm::scale(abduct, glm::vec3(1.,5, 1));
 		abduct = glm::translate(abduct, glm::vec3(-1,-1,1));
 		_renderer->_mv_matrix = view * abduct;
 		_renderer->bind();
 		cone->draw();
 		
-		_renderer->_mv_matrix = view * glm::translate(glm::mat4(1), glm::vec3(0,-10,0)) * glm::scale(glm::mat4(1), glm::vec3(10, 0.9, 10));
+		_renderer->_mv_matrix = view * glm::translate(glm::mat4(1), glm::vec3(0,-5,0)) * glm::scale(glm::mat4(1), glm::vec3(20, 2, 20));
 		_renderer->bind();
 		terrian->draw();
 		

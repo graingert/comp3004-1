@@ -2,6 +2,7 @@
 #include <vector>
 #include "models/gourd.h"
 #include <iostream>
+#include "libs/SOIL.h"
 
 
 using namespace std;
@@ -258,6 +259,16 @@ namespace graingert{
 	Terrian::Terrian(){
 		int height = 10;
 		int width = 10;
+		int channels;
+		
+		//from http://www.lonesock.net/soil.html
+		unsigned char *ht_map = SOIL_load_image
+			(
+				"mountain.png",
+				&width, &height, &channels,
+				SOIL_LOAD_L
+			);
+		
 		
 		float f_height = float(height)/2.0f;
 		float f_width = float(width)/2.0f;
@@ -265,13 +276,17 @@ namespace graingert{
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				Vertex v;
-				float z = sin(x+y);
+				float z = ((float)ht_map[(y*width)+x]/255.0f);
 				v.position = glm::vec4((y/f_height)-1, z, (x/f_width)-1, 1.0f);
 				
-				if (z>0.5){
-					v.color = RED;
-				} else {
+				if (z<0.1){
 					v.color = BLUE;
+				} else if (z < 0.2){
+					v.color = SAND;
+				} else if (z > 0.6){
+					v.color = WHITE;
+				} else {
+					v.color = GREEN;
 				}
 				v.normal = glm::vec3(1);
 				vertices.push_back(v);
