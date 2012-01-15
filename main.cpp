@@ -78,7 +78,9 @@ void key_callback(int key, int state){
 				prev_time = 0.0f;
 				break;
 			case 'P':
-				cam_position = glm::vec3(10, 0, 0);
+				cam_position = glm::vec3(10.000000,0.000000,0.000000);//, glm::vec3(0.000000,-2.000000,-1.000000), glm::vec3(0.0f,1.0f,0.0f);
+				up = -2;
+				pann = -1;
 				break;
 			case GLFW_KEY_DOWN:
 				if (speed > 0){

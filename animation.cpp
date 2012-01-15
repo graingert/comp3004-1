@@ -40,6 +40,30 @@ namespace graingert{
 		terrian->buffer();
 	}
 	
+	glm::vec3 get_missile_postion(float time){
+		float miss_time = fmod(time, 3.0f);
+		
+		PosFrame frames[] {
+			{0.0f, glm::vec3(10,-20,0)},
+			{1.0f, glm::vec3(-2,0,1)},
+			
+			{1.0f, glm::vec3(0,-20,10)},
+			{2.0f, glm::vec3(-2,0,1)},
+			
+			{2.0f, glm::vec3(10,-20,10)},
+			{3.0f, glm::vec3(-2,0,1)},
+		};
+		
+		for (int i = 0; i<6; i++){
+			if (miss_time <= frames[i].time){
+				float ratio = calc_ratio(frames[i-1].time, frames[i].time, time);
+				return calc_tween(frames[i-1].pos,frames[i].pos,ratio);
+			}
+		}
+		
+	}
+	
+	
 	void Animation::draw(float time){
 		setmatrix(time);
 		_renderer->_p_matrix = perspective;
@@ -63,38 +87,13 @@ namespace graingert{
 		_renderer->bind();
 		terrian->draw();
 		
-		float miss_time = fmod(time, 4.0f);
+		glm::mat4 missile(1);
+		missile = glm::scale(missile, glm::vec3(0.3, 0.3, 0.3));
+		missile = glm::translate(missile, get_missile_postion(time));			
+		_renderer->_mv_matrix = view * missile;
+		_renderer->bind();
 		
-		PosFrame frames[] {
-			{0.0f, glm::vec3(10,-20,0)},
-			{1.0f, glm::vec3(-2,0,1)},
-			{1.0f, glm::vec3(0,-20,10)},
-			{2.0f, glm::vec3(-2,0,1)},
-			{2.0f, glm::vec3(10,-20,10)},
-			{3.0f, glm::vec3(-2,0,1)},
-		};
-		
-
-	
-		for (int i = 0; i<6; i++){
-			if (miss_time <= frames[i].time){
-				
-				float ratio = calc_ratio(frames[i-1].time, frames[i].time, time);
-				
-				glm::mat4 missile(1);
-				missile = glm::scale(missile, glm::vec3(0.3, 0.3, 0.3));
-				
-				glm::vec3 position = calc_tween(frames[i-1].pos,frames[i].pos,ratio);
-				missile = glm::translate(missile, position);
-				
-				
-				
-				_renderer->_mv_matrix = view * missile;
-				_renderer->bind();
-				spherea->draw();
-				break;	
-			}
-		}
+		spherea->draw();
 		
 		
 		glm::mat4 moon(1);
