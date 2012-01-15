@@ -73,9 +73,11 @@ namespace graingert{
 			{2.0f, glm::vec3(10,-20,10)},
 			{3.0f, glm::vec3(-2,0,1)},
 		};
+		
+
 	
 		for (int i = 0; i<6; i++){
-			if (miss_time < frames[i].time){
+			if (miss_time <= frames[i].time){
 				
 				float ratio = calc_ratio(frames[i-1].time, frames[i].time, time);
 				
@@ -85,9 +87,12 @@ namespace graingert{
 				glm::vec3 position = calc_tween(frames[i-1].pos,frames[i].pos,ratio);
 				missile = glm::translate(missile, position);
 				
+				
+				
 				_renderer->_mv_matrix = view * missile;
 				_renderer->bind();
-				spherea->draw();	
+				spherea->draw();
+				break;	
 			}
 		}
 		
