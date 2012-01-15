@@ -49,5 +49,6 @@ D           Dump camera postion
 ./renderer.hpp	Used to control values that need to be bound to shaders (header)
 ./caves_heightmap.png	A heightmap from minecraft
 
-to build on the Ubuntu lab machines simply run "make all" to run run "make run"
+to build on the Ubuntu lab machines simply rmake the bin directory, then
+"make all" to run, run "make run"
 
