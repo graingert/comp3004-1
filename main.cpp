@@ -17,7 +17,6 @@
 #include "utils.hpp"
 #include "renderer.hpp"
 #include "animation.hpp"
-#include "scene_graph.hpp"
 
 void print_camera_details();
 void print_help();
@@ -30,6 +29,8 @@ Camera cam = {glm::vec3(10,0,0), glm::vec3(-1.000000,0.000000,0.000000)};
 float prev_time = 0;
 glm::mat4 rotate_left = glm::rotate(glm::mat4(1), (float)2.0 ,glm::vec3(0.0f, 1.0f, 0.0f));
 glm::mat4 rotate_right = glm::rotate(glm::mat4(1), (float)-2.0 ,glm::vec3(0.0f, 1.0f, 0.0f));
+glm::mat4 rotate_up = glm::rotate(glm::mat4(1), (float)-2.0 ,glm::vec3(0.0f, 0.0f, 1.0f));
+glm::mat4 rotate_down = glm::rotate(glm::mat4(1), (float)2.0 ,glm::vec3(0.0f, 0.0f, 1.0f));
 
 typedef enum Scene{
 	SPHERE,
@@ -66,6 +67,12 @@ void key_callback(int key, int state){
 				break;
 			case GLFW_KEY_RIGHT:
 				cam.dir = glm::normalize((rotate_right * glm::vec4(cam.dir,1.0f)).xyz);
+				break;
+			case '8':
+				cam.dir = glm::normalize((rotate_up * glm::vec4(cam.dir,1.0f)).xyz);
+				break;
+			case '2':
+				cam.dir = glm::normalize((rotate_down * glm::vec4(cam.dir,1.0f)).xyz);
 				break;
 			case 'R':
 				glfwSetTime(0);
