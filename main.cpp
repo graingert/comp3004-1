@@ -17,7 +17,6 @@
 #include "utils.hpp"
 #include "renderer.hpp"
 #include "animation.hpp"
-#include "scene_graph.hpp"
 
 void print_camera_details();
 void print_help();
@@ -26,10 +25,12 @@ using namespace graingert;
 bool running = true;
 bool tour = false;
 int speed = 0;
-int pann = 0;
-int up = 0;
-glm::vec3 cam_position(10, 0, 0);
-float prev_time;
+Camera cam = {glm::vec3(10,0,0), glm::vec3(-1.000000,0.000000,0.000000)};
+float prev_time = 0;
+glm::mat4 rotate_left = glm::rotate(glm::mat4(1), (float)2.0 ,glm::vec3(0.0f, 1.0f, 0.0f));
+glm::mat4 rotate_right = glm::rotate(glm::mat4(1), (float)-2.0 ,glm::vec3(0.0f, 1.0f, 0.0f));
+glm::mat4 rotate_up = glm::rotate(glm::mat4(1), (float)-2.0 ,glm::vec3(0.0f, 0.0f, 1.0f));
+glm::mat4 rotate_down = glm::rotate(glm::mat4(1), (float)2.0 ,glm::vec3(0.0f, 0.0f, 1.0f));
 
 typedef enum Scene{
 	SPHERE,
@@ -39,7 +40,13 @@ typedef enum Scene{
 	EXTENSION
 } Scene;
 
+glm::vec3 normalize_vec4(glm::vec4 vec){
+	glm::vec3 t2 = vec.xyz;
+	return glm::normalize(t2);
+}
+
 void key_callback(int key, int state){
+
 	if (state == GLFW_RELEASE){
 		if (tour){
 			switch (key){
@@ -62,25 +69,24 @@ void key_callback(int key, int state){
 				tour = true;
 				break;
 			case GLFW_KEY_LEFT:
-				pann++;
+				cam.dir = normalize_vec4(rotate_left * glm::vec4(cam.dir,0.0f));
 				break;
 			case GLFW_KEY_RIGHT:
-				pann--;
+				cam.dir = normalize_vec4(rotate_right * glm::vec4(cam.dir,0.0f));
 				break;
 			case '8':
-				up++;
+				cam.dir = normalize_vec4(rotate_up * glm::vec4(cam.dir,0.0f));
 				break;
 			case '2':
-				up--;
+				cam.dir = normalize_vec4(rotate_down * glm::vec4(cam.dir,0.0f));
 				break;
 			case 'R':
 				glfwSetTime(0);
 				prev_time = 0.0f;
 				break;
 			case 'P':
-				cam_position = glm::vec3(10.000000,0.000000,0.000000);//, glm::vec3(0.000000,-2.000000,-1.000000), glm::vec3(0.0f,1.0f,0.0f);
-				up = -2;
-				pann = -1;
+				cam.pos = glm::vec3(10.000000,0.000000,0.000000);
+				cam.dir = glm::vec3(-0.975900,-0.195180,-0.097590);
 				break;
 			case GLFW_KEY_DOWN:
 				if (speed > 0){
@@ -91,10 +97,10 @@ void key_callback(int key, int state){
 				speed++;
 				break;
 			case GLFW_KEY_PAGEUP:
-				cam_position.y += 0.5;
+				cam.pos.y += 0.5;
 				break;
 			case GLFW_KEY_PAGEDOWN:
-				cam_position.y -= 0.5;
+				cam.pos.y -= 0.5;
 				break;
 			case 'D':
 				print_camera_details();
@@ -107,12 +113,15 @@ void key_callback(int key, int state){
 }
 
 void print_camera_details(){
+	
 	printf(
-		"glm::vec3(%f,%f,%f), glm::vec3(%f,%f,%f), glm::vec3(0.0f,1.0f,0.0f);\n",
-		cam_position.x,
-		cam_position.y,
-		cam_position.z,
-		0.0f, (float) up, (float) pann
+		"pos(%f,%f,%f), dir(%f,%f,%f);\n",
+		cam.pos.x,
+		cam.pos.y,
+		cam.pos.z,
+		cam.dir.x,
+		cam.dir.y,
+		cam.dir.z
 	);
 }
 
@@ -226,6 +235,7 @@ int main()
 	{
 		float time = glfwGetTime();
 		float delta = time - prev_time;
+		prev_time = time;
 		
 		model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		renderer._mv_matrix = view * model;
@@ -234,11 +244,12 @@ int main()
 			animation.view = get_view(glfwGetTime());
 		} else {
 			
-			glm::vec3 target(0,up,pann);
-			glm::vec3 direction = glm::normalize(target - cam_position);
 			
-			cam_position += (direction * ((delta*speed)/100.0f));
-			animation.view = glm::lookAt(cam_position, target, glm::vec3(0,1,0));
+			//glm::vec3 target(0,up,pann);
+			//glm::vec3 direction = glm::normalize(camera.target - camera.eye);
+			
+			cam.pos += (cam.dir * ((delta*speed)/10.0f));
+			animation.view = glm::lookAt(cam.pos, cam.pos+cam.dir, glm::vec3(0,1,0));
 		}
 		
 		animation.draw(glfwGetTime());

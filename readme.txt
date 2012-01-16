@@ -26,7 +26,6 @@ D           Dump camera postion
 ./utils.cpp	Utilities such as color
 ./mesh.hpp	Tools to generate/load meshes (header)
 ./shader.hpp	Tools to compile shaders (header)
-./scene_graph.cpp	Attempt at producing a scene graph
 ./terrian.bmp	A test terrian
 ./mountain.png	The terrian that is used in the scene
 ./libs/SOIL.h	http://www.lonesock.net/soil.html
@@ -38,7 +37,6 @@ D           Dump camera postion
 ./animation.hpp	Animate the scene (header)
 ./Normals.geometryshader	A shader used to render normals
 ./readme.txt	This file
-./scene_graph.hpp	Attempt at producing a scene graph(header)
 ./SimpleVertexShader.vertexshader	Passthrough vertex shader
 ./SimpleFragmentShader.fragmentshader	Shader without lighting
 ./animation.cpp	Animate the scene

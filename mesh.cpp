@@ -2,7 +2,7 @@
 #include <vector>
 #include "models/gourd.h"
 #include <iostream>
-#include "libs/SOIL.h"
+#include <SOIL/SOIL.h>
 
 
 using namespace std;
