@@ -166,6 +166,7 @@ glm::mat4 get_view(float time){
 			);
 		}
 	}
+	return glm::lookAt(glm::vec3(10.000000,22.500000,0.000000), glm::vec3(0.000000,0.000000,0.000000), glm::vec3(0.0f,1.0f,0.0f));
 }
 
 
