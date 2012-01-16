@@ -19,7 +19,7 @@ namespace graingert{
 	}
 	
 	void Animation::setmatrix(float time){
-		float t = time - oldtime;
+		//float t = time - oldtime;
 		oldtime = time;
 		
 		float theta = time;
@@ -60,7 +60,7 @@ namespace graingert{
 				return calc_tween(frames[i-1].pos,frames[i].pos,ratio);
 			}
 		}
-		
+		return glm::vec3(10,-20,10);
 	}
 	
 	
