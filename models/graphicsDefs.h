@@ -2,7 +2,6 @@
 #define GRAPHICS_H
 
 #include <stdlib.h>
-#include <GL/glut.h>
 
 
 typedef GLfloat point3[3];
