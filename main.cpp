@@ -26,10 +26,9 @@ using namespace graingert;
 bool running = true;
 bool tour = false;
 int speed = 0;
-int pann = 0;
-int up = 0;
-glm::vec3 cam_position(10, 0, 0);
-float prev_time;
+KeyFrame camera = {0.0f, glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0)};
+float angle;
+float prev_time = 0;
 
 typedef enum Scene{
 	SPHERE,
@@ -62,25 +61,17 @@ void key_callback(int key, int state){
 				tour = true;
 				break;
 			case GLFW_KEY_LEFT:
-				pann++;
+				angle += 0.1;
 				break;
 			case GLFW_KEY_RIGHT:
-				pann--;
-				break;
-			case '8':
-				up++;
-				break;
-			case '2':
-				up--;
+				angle -= 0.1;
 				break;
 			case 'R':
 				glfwSetTime(0);
 				prev_time = 0.0f;
 				break;
 			case 'P':
-				cam_position = glm::vec3(10.000000,0.000000,0.000000);//, glm::vec3(0.000000,-2.000000,-1.000000), glm::vec3(0.0f,1.0f,0.0f);
-				up = -2;
-				pann = -1;
+				camera = {0.0f, glm::vec3(10,0,0), glm::vec3(0,-2,-1), glm::vec3(0,1,0)};
 				break;
 			case GLFW_KEY_DOWN:
 				if (speed > 0){
@@ -91,10 +82,12 @@ void key_callback(int key, int state){
 				speed++;
 				break;
 			case GLFW_KEY_PAGEUP:
-				cam_position.y += 0.5;
+				camera.eye.y += 0.5;
+				camera.target.y +=0.5;
 				break;
 			case GLFW_KEY_PAGEDOWN:
-				cam_position.y -= 0.5;
+				camera.eye.y -= 0.5;
+				camera.target.y -=0.5;
 				break;
 			case 'D':
 				print_camera_details();
@@ -109,10 +102,12 @@ void key_callback(int key, int state){
 void print_camera_details(){
 	printf(
 		"glm::vec3(%f,%f,%f), glm::vec3(%f,%f,%f), glm::vec3(0.0f,1.0f,0.0f);\n",
-		cam_position.x,
-		cam_position.y,
-		cam_position.z,
-		0.0f, (float) up, (float) pann
+		camera.eye.x,
+		camera.eye.y,
+		camera.eye.z,
+		camera.target.x,
+		camera.target.y,
+		camera.target.z
 	);
 }
 
@@ -227,7 +222,7 @@ int main()
 	{
 		float time = glfwGetTime();
 		float delta = time - prev_time;
-		float prev_time = time;
+		prev_time = time;
 		
 		model = glm::rotate( glm::mat4(1), (float)(50.0 * glfwGetTime()), glm::vec3(1,1,0));
 		renderer._mv_matrix = view * model;
@@ -236,11 +231,13 @@ int main()
 			animation.view = get_view(glfwGetTime());
 		} else {
 			
-			glm::vec3 target(0,up,pann);
-			glm::vec3 direction = glm::normalize(target - cam_position);
 			
-			cam_position += (direction * ((delta*speed)/100.0f));
-			animation.view = glm::lookAt(cam_position, target, glm::vec3(0,1,0));
+			//glm::vec3 target(0,up,pann);
+			glm::vec3 direction = glm::normalize(camera.target - camera.eye);
+			
+			camera.eye += (direction * ((delta*speed)/10.0f));
+			camera.target += (direction * ((delta*speed)/10.0f));
+			animation.view = glm::lookAt(camera.eye, camera.target, camera.up);
 		}
 		
 		animation.draw(glfwGetTime());
