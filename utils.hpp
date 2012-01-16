@@ -29,6 +29,11 @@ namespace graingert {
 glm::vec3 calc_tween(glm::vec3 a, glm::vec3 b, float ratio);
 float calc_ratio(float a, float b, float d);
 
+typedef struct Camera{
+	glm::vec3 pos;
+	glm::vec3 dir;
+} Camera;
+
 typedef struct KeyFrame{
 	float time;
 	glm::vec3 eye;

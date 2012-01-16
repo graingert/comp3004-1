@@ -26,9 +26,10 @@ using namespace graingert;
 bool running = true;
 bool tour = false;
 int speed = 0;
-KeyFrame camera = {0.0f, glm::vec3(10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0)};
-float angle;
+Camera cam = {glm::vec3(10,0,0), glm::vec3(-1.000000,0.000000,0.000000)};
 float prev_time = 0;
+glm::mat4 rotate_left = glm::rotate(glm::mat4(1), (float)2.0 ,glm::vec3(0.0f, 1.0f, 0.0f));
+glm::mat4 rotate_right = glm::rotate(glm::mat4(1), (float)-2.0 ,glm::vec3(0.0f, 1.0f, 0.0f));
 
 typedef enum Scene{
 	SPHERE,
@@ -61,17 +62,18 @@ void key_callback(int key, int state){
 				tour = true;
 				break;
 			case GLFW_KEY_LEFT:
-				angle += 0.1;
+				cam.dir = glm::normalize((rotate_left * glm::vec4(cam.dir,1.0f)).xyz);
 				break;
 			case GLFW_KEY_RIGHT:
-				angle -= 0.1;
+				cam.dir = glm::normalize((rotate_right * glm::vec4(cam.dir,1.0f)).xyz);
 				break;
 			case 'R':
 				glfwSetTime(0);
 				prev_time = 0.0f;
 				break;
 			case 'P':
-				camera = {0.0f, glm::vec3(10,0,0), glm::vec3(0,-2,-1), glm::vec3(0,1,0)};
+				cam.pos = glm::vec3(10.000000,0.000000,0.000000);
+				cam.dir = glm::vec3(-0.975900,-0.195180,-0.097590);
 				break;
 			case GLFW_KEY_DOWN:
 				if (speed > 0){
@@ -82,12 +84,10 @@ void key_callback(int key, int state){
 				speed++;
 				break;
 			case GLFW_KEY_PAGEUP:
-				camera.eye.y += 0.5;
-				camera.target.y +=0.5;
+				cam.pos.y += 0.5;
 				break;
 			case GLFW_KEY_PAGEDOWN:
-				camera.eye.y -= 0.5;
-				camera.target.y -=0.5;
+				cam.pos.y -= 0.5;
 				break;
 			case 'D':
 				print_camera_details();
@@ -100,14 +100,15 @@ void key_callback(int key, int state){
 }
 
 void print_camera_details(){
+	
 	printf(
-		"glm::vec3(%f,%f,%f), glm::vec3(%f,%f,%f), glm::vec3(0.0f,1.0f,0.0f);\n",
-		camera.eye.x,
-		camera.eye.y,
-		camera.eye.z,
-		camera.target.x,
-		camera.target.y,
-		camera.target.z
+		"pos(%f,%f,%f), dir(%f,%f,%f);\n",
+		cam.pos.x,
+		cam.pos.y,
+		cam.pos.z,
+		cam.dir.x,
+		cam.dir.y,
+		cam.dir.z
 	);
 }
 
@@ -233,11 +234,10 @@ int main()
 			
 			
 			//glm::vec3 target(0,up,pann);
-			glm::vec3 direction = glm::normalize(camera.target - camera.eye);
+			//glm::vec3 direction = glm::normalize(camera.target - camera.eye);
 			
-			camera.eye += (direction * ((delta*speed)/10.0f));
-			camera.target += (direction * ((delta*speed)/10.0f));
-			animation.view = glm::lookAt(camera.eye, camera.target, camera.up);
+			cam.pos += (cam.dir * ((delta*speed)/10.0f));
+			animation.view = glm::lookAt(cam.pos, cam.pos+cam.dir, glm::vec3(0,1,0));
 		}
 		
 		animation.draw(glfwGetTime());
